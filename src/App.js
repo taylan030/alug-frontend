@@ -4,6 +4,9 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import api from './services/api';
 import { CookieBanner, Footer, LegalModal, AdminLegalEditor } from './components/LegalPages';
 
+// API URL Configuration
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+
 const ErrorAlert = ({ message, onClose }) => (
   <div className="fixed top-4 right-4 bg-red-600 text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 z-50 animate-pulse">
     <AlertCircle size={20} />
@@ -323,7 +326,7 @@ export default function AlugMarketplace() {
 
   const loadBalance = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/payouts/balance', {
+      const response = await fetch(`${API_URL}/payouts/balance`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
@@ -335,7 +338,7 @@ export default function AlugMarketplace() {
 
   const loadPayouts = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/payouts/my-payouts', {
+      const response = await fetch(`${API_URL}/payouts/my-payouts`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await response.json();
@@ -351,10 +354,10 @@ export default function AlugMarketplace() {
       const [users, conversions, payoutRequests, stats] = await Promise.all([
         api.admin.getAllUsers(),
         api.admin.getAllConversions(),
-        fetch('http://localhost:5000/api/admin/payouts', { 
+        fetch(`${API_URL}/admin/payouts`, { 
           headers: { Authorization: `Bearer ${token}` }
         }).then(r => r.json()),
-        fetch('http://localhost:5000/api/admin/stats', { 
+        fetch(`${API_URL}/admin/stats`, { 
           headers: { Authorization: `Bearer ${token}` }
         }).then(r => r.json())
       ]);
@@ -554,7 +557,7 @@ export default function AlugMarketplace() {
 
     setLoading(true);
     try {
-      await fetch('http://localhost:5000/api/payouts/request', {
+      await fetch(`${API_URL}/payouts/request`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -576,7 +579,7 @@ export default function AlugMarketplace() {
 
   const handleUpdatePayoutStatus = async (payoutId, status) => {
     try {
-      await fetch(`http://localhost:5000/api/admin/payouts/${payoutId}`, {
+      await fetch(`${API_URL}/admin/payouts/${payoutId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
