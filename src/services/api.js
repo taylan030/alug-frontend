@@ -3,6 +3,7 @@
 // ============================================
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+   console.log('API_URL:', API_URL); // Debug log
 
 // Helper function für API calls
 const apiCall = async (endpoint, options = {}) => {
