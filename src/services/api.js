@@ -2,7 +2,7 @@
 // API SERVICE - Frontend Integration
 // ============================================
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://alug-backend.onrender.com/api';
    console.log('API_URL:', API_URL); // Debug log
 
 // Helper function für API calls
