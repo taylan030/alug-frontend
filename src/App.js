@@ -384,14 +384,21 @@ export default function AlugMarketplace() {
     }
   };
 
+  // ✅ FIXED: Token wird jetzt gespeichert!
   const handleUserLogin = async () => {
     setLoading(true);
     try {
       const data = await api.auth.login(userForm.email, userForm.password);
+      
+      // WICHTIG: Token speichern!
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
       localStorage.setItem('user', JSON.stringify(data.user));
+      
       setIsUserLoggedIn(true);
       setCurrentUser(data.user);
-      if (data.user.isAdmin) {
+      if (data.user.isAdmin || data.user.role === 'admin') {
         setIsAdmin(true);
         localStorage.setItem('isAdmin', 'true');
       }
@@ -405,6 +412,7 @@ export default function AlugMarketplace() {
     }
   };
 
+  // ✅ FIXED: Token wird jetzt gespeichert!
   const handleUserRegister = async () => {
     if (!userForm.email || !userForm.password || !userForm.name) {
       showError('Bitte fülle alle Felder aus!');
@@ -418,7 +426,13 @@ export default function AlugMarketplace() {
     setLoading(true);
     try {
       const data = await api.auth.register(userForm.name, userForm.email, userForm.password);
+      
+      // WICHTIG: Token speichern!
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
       localStorage.setItem('user', JSON.stringify(data.user));
+      
       setIsUserLoggedIn(true);
       setCurrentUser(data.user);
       setShowUserAuth(false);
