@@ -1,197 +1,249 @@
-// ============================================
-// API SERVICE - Frontend Integration
-// ============================================
+// src/services/api.js
+// Complete API service with automatic token handling
 
 const API_URL = process.env.REACT_APP_API_URL || 'https://alug-backend.onrender.com/api';
-   console.log('API_URL:', API_URL); // Debug log
 
-// Helper function für API calls
-const apiCall = async (endpoint, options = {}) => {
-  const token = localStorage.getItem('token');
-  
-  const config = {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
-  };
-
-  try {
-    const response = await fetch(`${API_URL}${endpoint}`, config);
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || 'Something went wrong');
-    }
-
-    return data;
-  } catch (error) {
-    console.error('API Error:', error);
-    throw error;
-  }
+// Helper function to get token from localStorage
+const getToken = () => {
+  return localStorage.getItem('token');
 };
 
-// ============================================
-// AUTH API
-// ============================================
-export const authAPI = {
-  register: async (name, email, password) => {
-    const data = await apiCall('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify({ name, email, password }),
-    });
-    
-    if (data.token) {
-      localStorage.setItem('token', data.token);
-    }
-    
-    return data;
-  },
+// Helper function to make authenticated requests
+const fetchWithAuth = async (url, options = {}) => {
+  const token = getToken();
+  
+  const headers = {
+    'Content-Type': 'application/json',
+    ...options.headers,
+  };
+  
+  // Add Authorization header if token exists
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  const response = await fetch(`${API_URL}${url}`, {
+    ...options,
+    headers,
+  });
+  
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || error.message || 'Request failed');
+  }
+  
+  return response.json();
+};
 
+// Auth API
+export const auth = {
+  // Login - STORES TOKEN automatically
   login: async (email, password) => {
-    const data = await apiCall('/auth/login', {
+    const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
     
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Login failed');
+    }
+    
+    const data = await response.json();
+    
+    // CRITICAL: Store token and user in localStorage
     if (data.token) {
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
     }
     
     return data;
   },
-
+  
+  // Register - STORES TOKEN automatically
+  register: async (email, password, name) => {
+    const response = await fetch(`${API_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, name }),
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Registration failed');
+    }
+    
+    const data = await response.json();
+    
+    // CRITICAL: Store token and user in localStorage
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+    }
+    
+    return data;
+  },
+  
+  // Logout
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
   },
-
-  isLoggedIn: () => {
-    return !!localStorage.getItem('token');
+  
+  // Get current user from localStorage
+  getCurrentUser: () => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  },
+  
+  // Check if user is logged in
+  isAuthenticated: () => {
+    return !!getToken();
   },
 };
 
-// ============================================
-// PRODUCTS API
-// ============================================
-export const productsAPI = {
+// Products API
+export const products = {
+  // Get all products (no auth required)
   getAll: async () => {
-    return await apiCall('/products');
+    const response = await fetch(`${API_URL}/products`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch products');
+    }
+    return response.json();
   },
-
+  
+  // Get single product
   getById: async (id) => {
-    return await apiCall(`/products/${id}`);
+    return fetchWithAuth(`/products/${id}`);
   },
-
+  
+  // Create product (ADMIN ONLY - with token)
   create: async (productData) => {
-    return await apiCall('/products', {
+    return fetchWithAuth('/products', {
       method: 'POST',
       body: JSON.stringify(productData),
     });
   },
-
+  
+  // Update product
   update: async (id, productData) => {
-    return await apiCall(`/products/${id}`, {
+    return fetchWithAuth(`/products/${id}`, {
       method: 'PUT',
       body: JSON.stringify(productData),
     });
   },
-
+  
+  // Delete product
   delete: async (id) => {
-    return await apiCall(`/products/${id}`, {
+    return fetchWithAuth(`/products/${id}`, {
       method: 'DELETE',
     });
   },
 };
 
-// ============================================
-// AFFILIATE API
-// ============================================
-export const affiliateAPI = {
-  generateLink: async (productId) => {
-    return await apiCall('/affiliate/generate', {
-      method: 'POST',
-      body: JSON.stringify({ productId }),
-    });
-  },
-
+// Affiliate Links API
+export const affiliate = {
+  // Get all user's affiliate links
   getMyLinks: async () => {
-    return await apiCall('/affiliate/my-links');
+    return fetchWithAuth('/affiliate-links');
   },
-
-  trackClick: async (linkCode) => {
-    return await apiCall('/track/click', {
+  
+  // Generate affiliate link
+  generateLink: async (productId) => {
+    return fetchWithAuth('/affiliate-links', {
       method: 'POST',
-      body: JSON.stringify({ linkCode }),
-    });
-  },
-
-  trackConversion: async (linkCode, amount) => {
-    return await apiCall('/track/conversion', {
-      method: 'POST',
-      body: JSON.stringify({ linkCode, amount }),
+      body: JSON.stringify({ product_id: productId }),
     });
   },
 };
 
-// ============================================
-// ANALYTICS API
-// ============================================
-export const analyticsAPI = {
+// Analytics API
+export const analytics = {
+  // Get user stats
   getMyStats: async () => {
-    return await apiCall('/analytics/my-stats');
+    return fetchWithAuth('/stats');
   },
-
-  getLinkStats: async (linkId) => {
-    return await apiCall(`/analytics/link/${linkId}`);
-  },
-
+  
+  // Get daily stats
   getDailyStats: async () => {
-    return await apiCall('/analytics/daily-stats');
+    return fetchWithAuth('/stats/daily');
   },
-
+  
+  // Get product stats
   getProductStats: async () => {
-    return await apiCall('/analytics/product-stats');
+    return fetchWithAuth('/stats/products');
   },
 };
 
-// ============================================
-// LEADERBOARD API
-// ============================================
-export const leaderboardAPI = {
-  getTopProducts: async () => {
-    return await apiCall('/leaderboard/products');
-  },
-
+// Leaderboard API
+export const leaderboard = {
+  // Get top marketers
   getTopMarketers: async () => {
-    return await apiCall('/leaderboard/marketers');
+    return fetchWithAuth('/stats/leaderboard');
+  },
+  
+  // Get top products
+  getTopProducts: async () => {
+    return fetchWithAuth('/stats/top-products');
   },
 };
 
-// ============================================
-// ADMIN API
-// ============================================
-export const adminAPI = {
+// Admin API
+export const admin = {
+  // Get all users
   getAllUsers: async () => {
-    return await apiCall('/admin/users');
+    return fetchWithAuth('/admin/users');
   },
-
+  
+  // Get all conversions
   getAllConversions: async () => {
-    return await apiCall('/admin/conversions');
+    return fetchWithAuth('/admin/conversions');
+  },
+  
+  // Get all stats
+  getStats: async () => {
+    return fetchWithAuth('/admin/stats');
+  },
+  
+  // Get all payouts
+  getPayouts: async () => {
+    return fetchWithAuth('/admin/payouts');
+  },
+  
+  // Update user
+  updateUser: async (userId, userData) => {
+    return fetchWithAuth(`/admin/users/${userId}`, {
+      method: 'PUT',
+      body: JSON.stringify(userData),
+    });
   },
 };
 
-// ============================================
-// EXPORT ALL
-// ============================================
-const api = {
-  auth: authAPI,
-  products: productsAPI,
-  affiliate: affiliateAPI,
-  analytics: analyticsAPI,
-  leaderboard: leaderboardAPI,
-  admin: adminAPI,
+// Payouts API
+export const payouts = {
+  // Request payout
+  request: async (amount) => {
+    return fetchWithAuth('/payouts', {
+      method: 'POST',
+      body: JSON.stringify({ amount }),
+    });
+  },
+  
+  // Get user payouts
+  getAll: async () => {
+    return fetchWithAuth('/payouts');
+  },
 };
 
-export default api;
+// Default export with all API modules
+export default {
+  auth,
+  products,
+  affiliate,
+  analytics,
+  leaderboard,
+  admin,
+  payouts,
+};
