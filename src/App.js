@@ -225,7 +225,6 @@ export default function AlugMarketplace() {
   const [success, setSuccess] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // NEU: Legal Pages States
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [legalPage, setLegalPage] = useState('impressum');
 
@@ -246,7 +245,7 @@ export default function AlugMarketplace() {
         const parsedUser = JSON.parse(user);
         setIsUserLoggedIn(true);
         setCurrentUser(parsedUser);
-        if (parsedUser.isAdmin || adminStatus) {
+        if (parsedUser.isAdmin || adminStatus || parsedUser.role === 'admin') {
           setIsAdmin(true);
         }
       } catch (err) {
@@ -371,26 +370,43 @@ export default function AlugMarketplace() {
     }
   };
 
-  const handleAdminLogin = () => {
-    if (adminPassword === ADMIN_PASSWORD) {
+  // ✅ FIXED: Macht jetzt echten Backend-Call und holt JWT Token
+  const handleAdminLogin = async () => {
+    if (adminPassword !== ADMIN_PASSWORD) {
+      showError('Falsches Admin-Passwort!');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = await api.auth.login('admin@alug.com', 'admin123');
+
+      // Token wird von api.auth.login automatisch in localStorage gespeichert
+      // Zusätzlich User auch speichern
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      setIsUserLoggedIn(true);
+      setCurrentUser(data.user);
       setIsAdmin(true);
       localStorage.setItem('isAdmin', 'true');
+
       setShowAdminLogin(false);
       setAdminPassword('');
       showSuccess('Admin-Modus aktiviert! 🔓');
       setActiveView('shop');
-    } else {
-      showError('Falsches Admin-Passwort!');
+    } catch (err) {
+      showError('Admin-Login fehlgeschlagen: ' + (err.message || 'Unbekannter Fehler'));
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ✅ FIXED: Token wird jetzt gespeichert!
+  // ✅ Token wird gespeichert
   const handleUserLogin = async () => {
     setLoading(true);
     try {
       const data = await api.auth.login(userForm.email, userForm.password);
       
-      // WICHTIG: Token speichern!
       if (data.token) {
         localStorage.setItem('token', data.token);
       }
@@ -412,7 +428,7 @@ export default function AlugMarketplace() {
     }
   };
 
-  // ✅ FIXED: Token wird jetzt gespeichert!
+  // ✅ Token wird gespeichert
   const handleUserRegister = async () => {
     if (!userForm.email || !userForm.password || !userForm.name) {
       showError('Bitte fülle alle Felder aus!');
@@ -427,7 +443,6 @@ export default function AlugMarketplace() {
     try {
       const data = await api.auth.register(userForm.name, userForm.email, userForm.password);
       
-      // WICHTIG: Token speichern!
       if (data.token) {
         localStorage.setItem('token', data.token);
       }
@@ -629,7 +644,6 @@ export default function AlugMarketplace() {
     return badges[status] || status;
   };
 
-  // NEU: Legal Click Handler
   const handleLegalClick = (page) => {
     setLegalPage(page);
     setShowLegalModal(true);
@@ -735,8 +749,8 @@ export default function AlugMarketplace() {
               autoFocus
             />
             <div className="flex gap-3">
-              <button onClick={handleAdminLogin} className="flex-1 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 font-semibold">
-                Anmelden
+              <button onClick={handleAdminLogin} disabled={loading} className="flex-1 bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 font-semibold disabled:opacity-50">
+                {loading ? 'Anmelden...' : 'Anmelden'}
               </button>
               <button onClick={() => { setShowAdminLogin(false); setAdminPassword(''); }} className="flex-1 bg-gray-700 text-gray-300 px-4 py-2 rounded-lg">
                 Abbrechen
@@ -885,7 +899,6 @@ export default function AlugMarketplace() {
               </div>
             </div>
 
-            {/* NEU: Legal Editor im Admin Panel */}
             <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                 <FileText className="text-purple-400" />
@@ -1371,13 +1384,9 @@ export default function AlugMarketplace() {
         )}
       </div>
 
-      {/* NEU: Footer hinzugefügt */}
       <Footer onLegalClick={handleLegalClick} />
-
-      {/* NEU: Cookie Banner */}
       <CookieBanner />
 
-      {/* NEU: Legal Modal */}
       {showLegalModal && (
         <LegalModal 
           page={legalPage} 
