@@ -1,1 +1,6 @@
-{"rewrites":[{"source":"/(.*)","destination":"/index.html"}]}
+{
+  "rewrites": [
+    { "source": "/aff/:code", "destination": "https://alug-backend.onrender.com/aff/:code" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
