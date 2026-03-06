@@ -3,12 +3,10 @@
 
 const API_URL = process.env.REACT_APP_API_URL || 'https://alug-backend.onrender.com/api';
 
-// Helper function to get token from localStorage
 const getToken = () => {
   return localStorage.getItem('token');
 };
 
-// Helper function to make authenticated requests
 const fetchWithAuth = async (url, options = {}) => {
   const token = getToken();
   
@@ -17,7 +15,6 @@ const fetchWithAuth = async (url, options = {}) => {
     ...options.headers,
   };
   
-  // Add Authorization header if token exists
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -37,7 +34,6 @@ const fetchWithAuth = async (url, options = {}) => {
 
 // Auth API
 export const auth = {
-  // Login - STORES TOKEN automatically
   login: async (email, password) => {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: 'POST',
@@ -52,7 +48,6 @@ export const auth = {
     
     const data = await response.json();
     
-    // CRITICAL: Store token and user in localStorage
     if (data.token) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
@@ -61,12 +56,11 @@ export const auth = {
     return data;
   },
   
-  // Register - STORES TOKEN automatically
-  register: async (email, password, name) => {
+  register: async (name, email, password) => {
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, name }),
+      body: JSON.stringify({ name, email, password }),
     });
     
     if (!response.ok) {
@@ -76,7 +70,6 @@ export const auth = {
     
     const data = await response.json();
     
-    // CRITICAL: Store token and user in localStorage
     if (data.token) {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
@@ -85,19 +78,16 @@ export const auth = {
     return data;
   },
   
-  // Logout
   logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   },
   
-  // Get current user from localStorage
   getCurrentUser: () => {
     const userStr = localStorage.getItem('user');
     return userStr ? JSON.parse(userStr) : null;
   },
   
-  // Check if user is logged in
   isAuthenticated: () => {
     return !!getToken();
   },
@@ -105,7 +95,6 @@ export const auth = {
 
 // Products API
 export const products = {
-  // Get all products (no auth required)
   getAll: async () => {
     const response = await fetch(`${API_URL}/products`);
     if (!response.ok) {
@@ -114,12 +103,10 @@ export const products = {
     return response.json();
   },
   
-  // Get single product
   getById: async (id) => {
     return fetchWithAuth(`/products/${id}`);
   },
   
-  // Create product (ADMIN ONLY - with token)
   create: async (productData) => {
     return fetchWithAuth('/products', {
       method: 'POST',
@@ -127,7 +114,6 @@ export const products = {
     });
   },
   
-  // Update product
   update: async (id, productData) => {
     return fetchWithAuth(`/products/${id}`, {
       method: 'PUT',
@@ -135,7 +121,6 @@ export const products = {
     });
   },
   
-  // Delete product
   delete: async (id) => {
     return fetchWithAuth(`/products/${id}`, {
       method: 'DELETE',
@@ -145,74 +130,73 @@ export const products = {
 
 // Affiliate Links API
 export const affiliate = {
-  // Get all user's affiliate links
+  // GET  → /api/affiliate/my-links
   getMyLinks: async () => {
-    return fetchWithAuth('/affiliate-links');
+    return fetchWithAuth('/affiliate/my-links');
   },
   
-  // Generate affiliate link
+  // POST → /api/affiliate/generate  (backend expects: productId)
   generateLink: async (productId) => {
-    return fetchWithAuth('/affiliate-links', {
+    return fetchWithAuth('/affiliate/generate', {
       method: 'POST',
-      body: JSON.stringify({ product_id: productId }),
+      body: JSON.stringify({ productId }),
     });
   },
 };
 
 // Analytics API
 export const analytics = {
-  // Get user stats
+  // GET → /api/analytics/my-stats
   getMyStats: async () => {
-    return fetchWithAuth('/stats');
+    return fetchWithAuth('/analytics/my-stats');
   },
   
-  // Get daily stats
+  // GET → /api/analytics/daily-stats
   getDailyStats: async () => {
-    return fetchWithAuth('/stats/daily');
+    return fetchWithAuth('/analytics/daily-stats');
   },
   
-  // Get product stats
+  // GET → /api/analytics/product-stats
   getProductStats: async () => {
-    return fetchWithAuth('/stats/products');
+    return fetchWithAuth('/analytics/product-stats');
   },
 };
 
 // Leaderboard API
 export const leaderboard = {
-  // Get top marketers
+  // GET → /api/leaderboard/marketers
   getTopMarketers: async () => {
-    return fetchWithAuth('/stats/leaderboard');
+    const response = await fetch(`${API_URL}/leaderboard/marketers`);
+    if (!response.ok) throw new Error('Failed to fetch leaderboard');
+    return response.json();
   },
   
-  // Get top products
+  // GET → /api/leaderboard/products
   getTopProducts: async () => {
-    return fetchWithAuth('/stats/top-products');
+    const response = await fetch(`${API_URL}/leaderboard/products`);
+    if (!response.ok) throw new Error('Failed to fetch top products');
+    return response.json();
   },
 };
 
 // Admin API
 export const admin = {
-  // Get all users
   getAllUsers: async () => {
     return fetchWithAuth('/admin/users');
   },
   
-  // Get all conversions
   getAllConversions: async () => {
     return fetchWithAuth('/admin/conversions');
   },
   
-  // Get all stats
   getStats: async () => {
     return fetchWithAuth('/admin/stats');
   },
   
-  // Get all payouts
   getPayouts: async () => {
     return fetchWithAuth('/admin/payouts');
   },
   
-  // Update user
   updateUser: async (userId, userData) => {
     return fetchWithAuth(`/admin/users/${userId}`, {
       method: 'PUT',
@@ -223,21 +207,18 @@ export const admin = {
 
 // Payouts API
 export const payouts = {
-  // Request payout
   request: async (amount) => {
-    return fetchWithAuth('/payouts', {
+    return fetchWithAuth('/payouts/request', {
       method: 'POST',
       body: JSON.stringify({ amount }),
     });
   },
   
-  // Get user payouts
   getAll: async () => {
-    return fetchWithAuth('/payouts');
+    return fetchWithAuth('/payouts/my-payouts');
   },
 };
 
-// Default export with all API modules
 export default {
   auth,
   products,
