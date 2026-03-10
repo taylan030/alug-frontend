@@ -235,7 +235,7 @@ export default function AlugMarketplace() {
   const [showLegalModal, setShowLegalModal] = useState(false);
   const [legalPage, setLegalPage] = useState('impressum');
 
-  const ADMIN_PASSWORD = 'admin123';
+  const ADMIN_PASSWORD = process.env.REACT_APP_ADMIN_PASSWORD || 'admin123';
 
   useEffect(() => {
     const path = window.location.pathname;
@@ -360,7 +360,7 @@ export default function AlugMarketplace() {
     if (adminPassword !== ADMIN_PASSWORD) { showError('Falsches Admin-Passwort!'); return; }
     setLoading(true);
     try {
-      const data = await api.auth.login('admin@alug.com', 'admin123');
+      const data = await api.auth.login('admin@alug.com', 'Ringbahn030');
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       setIsUserLoggedIn(true);
