@@ -65,12 +65,12 @@ export const Footer = ({ onLegalClick }) => {
           <div>
             <h3 className="text-white font-bold text-lg mb-3">Alug Marketplace</h3>
             <p className="text-gray-400 text-sm">
-              Deine Affiliate Marketing Plattform für digitale Produkte und Services.
+              Your Affiliate Marketing Platform for digital products and services.
             </p>
           </div>
           
           <div>
-            <h4 className="text-white font-semibold mb-3">Rechtliches</h4>
+            <h4 className="text-white font-semibold mb-3">Legal</h4>
             <ul className="space-y-2">
               <li>
                 <button 
@@ -85,7 +85,7 @@ export const Footer = ({ onLegalClick }) => {
                   onClick={() => onLegalClick('datenschutz')}
                   className="text-gray-400 hover:text-purple-400 text-sm"
                 >
-                  Datenschutzerklärung
+                  Privacy Policy
                 </button>
               </li>
               <li>
@@ -93,7 +93,7 @@ export const Footer = ({ onLegalClick }) => {
                   onClick={() => onLegalClick('agb')}
                   className="text-gray-400 hover:text-purple-400 text-sm"
                 >
-                  AGB
+                  Terms & Conditions
                 </button>
               </li>
               <li>
@@ -108,19 +108,16 @@ export const Footer = ({ onLegalClick }) => {
           </div>
           
           <div>
-            <h4 className="text-white font-semibold mb-3">Kontakt</h4>
+            <h4 className="text-white font-semibold mb-3">Contact</h4>
             <p className="text-gray-400 text-sm">
-              E-Mail: <a href="mailto:info@alug.com" className="text-purple-400">info@alug.com</a>
-            </p>
-            <p className="text-gray-400 text-sm mt-2">
-              Support: <a href="mailto:support@alug.com" className="text-purple-400">support@alug.com</a>
+              E-Mail: <a href="mailto:contact@alugaffiliate.com" className="text-purple-400">contact@alugaffiliate.com</a>
             </p>
           </div>
         </div>
         
         <div className="border-t border-gray-700 mt-8 pt-6 text-center">
           <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} Alug Marketplace. Alle Rechte vorbehalten.
+            © {new Date().getFullYear()} Alug Marketplace. All rights reserved.
           </p>
         </div>
       </div>
@@ -132,7 +129,6 @@ export const Footer = ({ onLegalClick }) => {
 // LEGAL MODAL COMPONENT
 // ============================================
 export const LegalModal = ({ page, onClose }) => {
-  // Lade gespeicherte Daten aus localStorage
   const [legalData, setLegalData] = useState({});
 
   useEffect(() => {
@@ -183,7 +179,7 @@ export const LegalModal = ({ page, onClose }) => {
         <h3>Handelsregister</h3>
         <p>[FALLS GmbH: Registergericht und Handelsregisternummer]</p>
 
-        <h3>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h3>
+        <h3>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h3>
         <p>[IHR NAME]<br/>
         [IHRE ADRESSE]</p>
 
@@ -217,8 +213,8 @@ export const LegalModal = ({ page, onClose }) => {
         Andere Daten werden automatisch beim Besuch der Website durch unsere IT-Systeme erfasst.</p>
 
         <h2>2. Hosting</h2>
-        <p>Wir hosten die Inhalte unserer Website bei folgendem Anbieter:<br/>
-        <strong>[HOSTING-ANBIETER]</strong></p>
+        <p>Wir hosten die Inhalte unserer Website bei folgenden Anbietern:<br/>
+        <strong>Vercel Inc.</strong> (Frontend), <strong>Render Services Inc.</strong> (Backend), <strong>Neon Inc.</strong> (Datenbank)</p>
 
         <h2>3. Allgemeine Hinweise und Pflichtinformationen</h2>
         
@@ -249,7 +245,7 @@ export const LegalModal = ({ page, onClose }) => {
         <h3>Registrierung auf dieser Website</h3>
         <p>Sie können sich auf dieser Website registrieren, um zusätzliche Funktionen zu nutzen. 
         Die dazu eingegebenen Daten (Name, E-Mail, Passwort) verwenden wir nur zum Zwecke der Nutzung 
-        des jeweiligen Angebotes oder Dienstes.</p>
+        des jeweiligen Angebotes oder Dienstes, auf Basis von Art. 6 Abs. 1 lit. b DSGVO.</p>
 
         <h2>5. Affiliate-Programme und Tracking</h2>
         <p>Diese Website nimmt an Affiliate-Programmen teil. Dabei werden durch die auf dieser 
@@ -261,8 +257,10 @@ export const LegalModal = ({ page, onClose }) => {
           <li>Klicks auf Affiliate-Links</li>
           <li>IP-Adresse (anonymisiert)</li>
           <li>Zeitpunkt des Klicks</li>
-          <li>Browser-Informationen</li>
+          <li>Browser-Informationen (User-Agent)</li>
         </ul>
+
+        <p>Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse).</p>
 
         <h3>Ihre Rechte</h3>
         <p>Sie haben jederzeit das Recht:</p>
@@ -276,7 +274,7 @@ export const LegalModal = ({ page, onClose }) => {
         </ul>
 
         <p><strong>Kontakt für Datenschutzanfragen:</strong><br/>
-        [IHRE EMAIL]</p>
+        contact@alugaffiliate.com</p>
 
         <p>Stand: ${new Date().toLocaleDateString('de-DE')}</p>
       `
@@ -301,8 +299,7 @@ export const LegalModal = ({ page, onClose }) => {
 
         <h3>3.1 Registrierung</h3>
         <p>Die Nutzung der Plattform setzt eine Registrierung voraus. Bei der Registrierung müssen 
-        wahrheitsgemäße und vollständige Angaben gemacht werden. Der Nutzer ist verpflichtet, seine 
-        Daten aktuell zu halten.</p>
+        wahrheitsgemäße und vollständige Angaben gemacht werden.</p>
 
         <h3>3.2 Affiliate-Links</h3>
         <p>Nach erfolgreicher Registrierung erhält der Affiliate individuelle Tracking-Links, 
@@ -312,7 +309,7 @@ export const LegalModal = ({ page, onClose }) => {
         
         <h3>4.1 Provisionshöhe</h3>
         <p>Die Höhe der Provision wird für jedes Produkt individuell festgelegt und ist in der 
-        Produktbeschreibung ersichtlich. Provisionen können prozentual oder als Fixbetrag ausgezahlt werden.</p>
+        Produktbeschreibung ersichtlich.</p>
 
         <h3>4.2 Provisionsanspruch</h3>
         <p>Ein Provisionsanspruch entsteht, wenn:</p>
@@ -323,9 +320,9 @@ export const LegalModal = ({ page, onClose }) => {
           <li>Kein Betrugsversuch vorliegt</li>
         </ul>
 
-        <h3>4.3 Cookie-Laufzeit</h3>
-        <p>Die Standard-Cookie-Laufzeit beträgt 30 Tage. Innerhalb dieser Zeit werden dem Affiliate 
-        Conversions zugeordnet, auch wenn der Kauf nicht sofort erfolgt.</p>
+        <h3>4.3 Attribution Window</h3>
+        <p>Die Standard-Cookie-Laufzeit beträgt 30 Tage (je nach Produkt 7–90 Tage). Innerhalb dieser Zeit 
+        werden dem Affiliate Conversions zugeordnet.</p>
 
         <h2>5. Auszahlungen</h2>
         
@@ -334,58 +331,33 @@ export const LegalModal = ({ page, onClose }) => {
 
         <h3>5.2 Auszahlungsmodalitäten</h3>
         <p>Auszahlungen erfolgen nach Beantragung durch den Affiliate und nach Prüfung durch uns. 
-        Die Bearbeitungszeit beträgt in der Regel 5-10 Werktage.</p>
+        Die Bearbeitungszeit beträgt in der Regel 5–10 Werktage.</p>
 
         <h3>5.3 Zahlungsmethoden</h3>
-        <p>Verfügbare Zahlungsmethoden: PayPal, Banküberweisung, Kryptowährungen (nach Verfügbarkeit)</p>
+        <p>Verfügbare Zahlungsmethoden: PayPal, Banküberweisung, Kryptowährungen (nach Verfügbarkeit).</p>
 
         <h2>6. Pflichten des Affiliates</h2>
         
-        <h3>6.1 Werbemittel</h3>
-        <p>Der Affiliate verpflichtet sich:</p>
-        <ul>
-          <li>Nur genehmigte Werbemittel zu verwenden</li>
-          <li>Keine irreführende oder falsche Werbung zu schalten</li>
-          <li>Marken- und Urheberrechte zu respektieren</li>
-          <li>Spam und unerlaubte Werbeformen (z.B. unerwünschte E-Mails) zu unterlassen</li>
-          <li>Keine pornografischen oder anstößigen Inhalte mit Affiliate-Links zu verbinden</li>
-        </ul>
-
-        <h3>6.2 Verbotene Praktiken</h3>
+        <h3>6.1 Verbotene Praktiken</h3>
         <p>Folgende Praktiken sind untersagt und führen zur sofortigen Sperrung:</p>
         <ul>
           <li>Cookie-Stuffing oder Cookie-Dropping</li>
           <li>Selbst-Referrals (eigene Käufe über Affiliate-Link)</li>
           <li>Manipulation von Tracking-Daten</li>
-          <li>Verwendung von Markennamen in Domains ohne ausdrückliche Erlaubnis</li>
-          <li>Incentive-Traffic ohne vorherige Genehmigung</li>
           <li>Klickbetrug oder automatisierte Klicks</li>
+          <li>Spam und unerlaubte Werbeformen</li>
         </ul>
 
         <h2>7. Haftung</h2>
         <p>Wir haften nur für Vorsatz und grobe Fahrlässigkeit. Die Haftung für leichte Fahrlässigkeit 
-        ist ausgeschlossen, soweit nicht eine Verletzung wesentlicher Vertragspflichten (Kardinalpflichten) 
-        vorliegt.</p>
+        ist ausgeschlossen, soweit nicht eine Verletzung wesentlicher Vertragspflichten vorliegt.</p>
 
         <h2>8. Vertragslaufzeit und Kündigung</h2>
         <p>Der Vertrag wird auf unbestimmte Zeit geschlossen. Beide Parteien können den Vertrag 
         jederzeit ohne Angabe von Gründen mit einer Frist von 14 Tagen kündigen.</p>
 
-        <h3>8.1 Außerordentliche Kündigung</h3>
-        <p>Bei Verstoß gegen diese AGB, insbesondere bei verbotenen Praktiken, behalten wir uns das 
-        Recht vor, den Account sofort zu sperren und bereits verdiente Provisionen einzubehalten.</p>
-
-        <h2>9. Änderungen der AGB</h2>
-        <p>Wir behalten uns das Recht vor, diese AGB jederzeit zu ändern. Änderungen werden den 
-        Nutzern per E-Mail mitgeteilt und gelten als akzeptiert, wenn nicht innerhalb von 14 Tagen 
-        widersprochen wird.</p>
-
-        <h2>10. Datenschutz</h2>
-        <p>Für die Verarbeitung personenbezogener Daten gelten unsere Datenschutzbestimmungen.</p>
-
-        <h2>11. Schlussbestimmungen</h2>
-        <p>Es gilt das Recht der Bundesrepublik Deutschland unter Ausschluss des UN-Kaufrechts. 
-        Gerichtsstand ist [IHR GERICHTSSTAND], soweit gesetzlich zulässig.</p>
+        <h2>9. Schlussbestimmungen</h2>
+        <p>Es gilt das Recht der Bundesrepublik Deutschland. Gerichtsstand ist [IHR GERICHTSSTAND], soweit gesetzlich zulässig.</p>
 
         <p>Stand: ${new Date().toLocaleDateString('de-DE')}</p>
       `
@@ -402,63 +374,27 @@ export const LegalModal = ({ page, onClose }) => {
         erworben werden.</p>
 
         <h3>Wie funktioniert es?</h3>
-        <p>Wenn Sie auf einen Affiliate-Link (auch "Werbelink" oder "Partnerlink" genannt) klicken 
-        und anschließend ein Produkt kaufen oder eine Dienstleistung in Anspruch nehmen, erhalten 
-        wir möglicherweise eine Provision vom Anbieter. Diese Provision wird ohne zusätzliche Kosten 
-        für Sie berechnet - Sie zahlen denselben Preis wie beim direkten Kauf.</p>
+        <p>Wenn Sie auf einen Affiliate-Link klicken und anschließend ein Produkt kaufen, erhalten 
+        wir möglicherweise eine Provision vom Anbieter — ohne zusätzliche Kosten für Sie.</p>
 
-        <h3>Kennzeichnung von Affiliate-Links</h3>
-        <p>Alle Affiliate-Links auf dieser Plattform sind entsprechend gekennzeichnet. Wir verpflichten 
-        unsere Partner, transparent mit ihren Affiliate-Beziehungen umzugehen.</p>
-
-        <h3>Unsere Werte und Prinzipien</h3>
+        <h3>Unsere Werte</h3>
         <ul>
-          <li><strong>Ehrlichkeit:</strong> Wir kennzeichnen alle Affiliate-Links transparent und deutlich</li>
-          <li><strong>Qualität:</strong> Wir empfehlen nur Produkte und Services, von denen wir überzeugt sind</li>
-          <li><strong>Unabhängigkeit:</strong> Unsere Meinung und Bewertung wird nicht durch Provisionen beeinflusst</li>
+          <li><strong>Ehrlichkeit:</strong> Wir kennzeichnen alle Affiliate-Links transparent</li>
+          <li><strong>Qualität:</strong> Wir empfehlen nur geprüfte Produkte und Services</li>
           <li><strong>Fairness:</strong> Wir behandeln alle Produkte und Anbieter gleich</li>
         </ul>
 
-        <h3>Ihre Vorteile</h3>
-        <p>Durch die Nutzung unserer Affiliate-Links:</p>
-        <ul>
-          <li>Zahlen Sie denselben Preis wie beim direkten Kauf (keine zusätzlichen Kosten)</li>
-          <li>Unterstützen Sie unsere Arbeit und den Betrieb dieser Plattform</li>
-          <li>Erhalten Sie Zugang zu geprüften und empfohlenen Produkten</li>
-          <li>Profitieren von speziellen Deals und Angeboten (falls verfügbar)</li>
-        </ul>
-
-        <h3>Keine Beeinflussung der Kaufentscheidung</h3>
-        <p>Die Tatsache, dass wir durch Affiliate-Links Provisionen verdienen, beeinflusst nicht unsere 
-        Produktauswahl oder -bewertung. Wir listen Produkte basierend auf Qualität, Relevanz und Nutzen 
-        für unsere Community auf.</p>
-
-        <h3>Rechtliche Grundlage</h3>
-        <p>Diese Offenlegung erfolgt gemäß:</p>
-        <ul>
-          <li>§ 5a UWG (Gesetz gegen den unlauteren Wettbewerb)</li>
-          <li>§ 6 TMG (Telemediengesetz)</li>
-          <li>FTC Guidelines (Federal Trade Commission) für internationale Compliance</li>
-          <li>DSGVO (Datenschutz-Grundverordnung)</li>
-        </ul>
-
         <h3>Cookie-Nutzung für Tracking</h3>
-        <p>Für die Zuordnung von Käufen über Affiliate-Links verwenden wir Cookies. Diese Cookies:</p>
+        <p>Für die Zuordnung von Käufen über Affiliate-Links verwenden wir Cookies. Diese:</p>
         <ul>
           <li>Speichern, dass Sie über unseren Link auf eine Seite gelangt sind</li>
           <li>Ermöglichen die korrekte Provisionszuordnung</li>
-          <li>Laufen in der Regel nach 30 Tagen ab</li>
+          <li>Laufen nach 30 Tagen ab (je nach Produkt)</li>
           <li>Enthalten keine persönlichen Identifikationsdaten</li>
         </ul>
 
-        <h3>Kontakt und Fragen</h3>
-        <p>Bei Fragen zu unseren Affiliate-Beziehungen, der Provisionierung oder zur Funktionsweise 
-        der Links kontaktieren Sie uns bitte unter:</p>
-        <p>E-Mail: <a href="mailto:[IHRE EMAIL]" class="text-purple-400 underline">[IHRE EMAIL]</a></p>
-
-        <h3>Änderungen dieser Erklärung</h3>
-        <p>Wir behalten uns vor, diese Affiliate-Offenlegung bei Bedarf zu aktualisieren. 
-        Änderungen werden auf dieser Seite veröffentlicht.</p>
+        <h3>Kontakt</h3>
+        <p>E-Mail: <a href="mailto:contact@alugaffiliate.com" class="text-purple-400 underline">contact@alugaffiliate.com</a></p>
 
         <p><strong>Letzte Aktualisierung:</strong> ${new Date().toLocaleDateString('de-DE')}</p>
       `
@@ -515,8 +451,8 @@ export const LegalModal = ({ page, onClose }) => {
           margin-bottom: 0.5rem;
         }
         .legal-content p {
-          margin-bottom: 1rem
-          }
+          margin-bottom: 1rem;
+        }
         .legal-content ul {
           margin-left: 1.5rem;
           margin-bottom: 1rem;
@@ -544,15 +480,15 @@ export const LegalModal = ({ page, onClose }) => {
 export const AdminLegalEditor = ({ onSave }) => {
   const [activeSection, setActiveSection] = useState(null);
   const [formData, setFormData] = useState({
-    companyName: '[FIRMENNAME]',
-    street: '[STRASSE UND HAUSNUMMER]',
-    city: '[PLZ STADT]',
+    companyName: 'Taylan Mert',
+    street: 'Ringbahnstraße 57',
+    city: '12099 Berlin',
     country: 'Deutschland',
-    email: '[IHRE EMAIL]',
-    phone: '[IHRE TELEFONNUMMER]',
-    ustId: '[UST-ID FALLS VORHANDEN]',
-    handelsregister: '[FALLS GmbH]',
-    hostingProvider: '[HOSTING-ANBIETER]',
+    email: 'contact@alugaffiliate.com',
+    phone: '',
+    ustId: '',
+    handelsregister: '',
+    hostingProvider: 'Vercel Inc. (Frontend), Render Services Inc. (Backend), Neon Inc. (Datenbank)',
   });
 
   const sections = [
@@ -604,13 +540,12 @@ export const AdminLegalEditor = ({ onSave }) => {
               {section.id === 'company' && (
                 <>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Firmenname / Name *</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Name *</label>
                     <input
                       type="text"
                       value={formData.companyName}
                       onChange={(e) => setFormData({...formData, companyName: e.target.value})}
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
-                      placeholder="z.B. Alug GmbH oder Max Mustermann"
                     />
                   </div>
                   <div>
@@ -620,7 +555,6 @@ export const AdminLegalEditor = ({ onSave }) => {
                       value={formData.street}
                       onChange={(e) => setFormData({...formData, street: e.target.value})}
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
-                      placeholder="z.B. Musterstraße 123"
                     />
                   </div>
                   <div>
@@ -630,7 +564,6 @@ export const AdminLegalEditor = ({ onSave }) => {
                       value={formData.city}
                       onChange={(e) => setFormData({...formData, city: e.target.value})}
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
-                      placeholder="z.B. 10115 Berlin"
                     />
                   </div>
                   <div>
@@ -654,17 +587,16 @@ export const AdminLegalEditor = ({ onSave }) => {
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
-                      placeholder="z.B. info@alug.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Telefonnummer</label>
+                    <label className="block text-sm font-medium text-gray-300 mb-2">Telefonnummer (optional)</label>
                     <input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({...formData, phone: e.target.value})}
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
-                      placeholder="z.B. +49 30 12345678"
+                      placeholder="+49 30 12345678"
                     />
                   </div>
                 </>
@@ -679,7 +611,7 @@ export const AdminLegalEditor = ({ onSave }) => {
                       value={formData.ustId}
                       onChange={(e) => setFormData({...formData, ustId: e.target.value})}
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
-                      placeholder="z.B. DE123456789"
+                      placeholder="DE123456789"
                     />
                     <p className="text-xs text-gray-500 mt-1">Nur bei Umsatzsteuerpflicht</p>
                   </div>
@@ -690,7 +622,7 @@ export const AdminLegalEditor = ({ onSave }) => {
                       value={formData.handelsregister}
                       onChange={(e) => setFormData({...formData, handelsregister: e.target.value})}
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
-                      placeholder="z.B. Amtsgericht Berlin, HRB 12345"
+                      placeholder="Amtsgericht Berlin, HRB 12345"
                     />
                     <p className="text-xs text-gray-500 mt-1">Nur bei GmbH/UG</p>
                   </div>
@@ -701,7 +633,6 @@ export const AdminLegalEditor = ({ onSave }) => {
                       value={formData.hostingProvider}
                       onChange={(e) => setFormData({...formData, hostingProvider: e.target.value})}
                       className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white"
-                      placeholder="z.B. Hetzner Online GmbH"
                     />
                   </div>
                 </>
@@ -725,8 +656,7 @@ export const AdminLegalEditor = ({ onSave }) => {
         <h4 className="text-white font-semibold mb-2">💡 Wichtiger Hinweis</h4>
         <p className="text-blue-200 text-sm">
           Diese Texte sind Vorlagen und ersetzen KEINE Rechtsberatung! Für rechtssichere Texte 
-          konsultiere bitte einen Anwalt oder nutze Dienste wie eRecht24, IT-Recht-Kanzlei oder 
-          Impressum-Generator.de.
+          konsultiere bitte einen Anwalt oder nutze Dienste wie eRecht24 oder IT-Recht-Kanzlei.
         </p>
       </div>
     </div>
