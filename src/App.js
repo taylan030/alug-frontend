@@ -3,6 +3,7 @@ import { Search, Link2, Trash2, Copy, Check, Lock, ShoppingBag, TrendingUp, Uplo
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import api from './services/api';
 import { CookieBanner, Footer, LegalModal, AdminLegalEditor } from './components/LegalPages';
+import LandingPage from './components/LandingPage'; // ← NEU
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 const BACKEND_URL = process.env.REACT_APP_API_URL
@@ -89,9 +90,6 @@ const ProductStatsChart = () => {
   );
 };
 
-// ============================================
-// PRODUCT FORM (shared by Admin & Partner)
-// ============================================
 const ProductForm = ({ onSubmit, onCancel, loading, categories, title = "Create Product" }) => {
   const [formData, setFormData] = useState({ name: '', description: '', price: '', priceValue: 0, type: 'product', commissionType: 'percentage', commissionValue: '', category: '', imageData: null, imagePreview: null, productUrl: '', attributionDays: 30 });
 
@@ -205,7 +203,7 @@ export default function AlugMarketplace() {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [showUserAuth, setShowUserAuth] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // login | register | register-partner
+  const [authMode, setAuthMode] = useState('login');
   const [userForm, setUserForm] = useState({ email: '', password: '', name: '', confirmPassword: '' });
   const [myLinks, setMyLinks] = useState([]);
   const [copiedId, setCopiedId] = useState(null);
@@ -248,6 +246,7 @@ export default function AlugMarketplace() {
     checkAuthStatus();
   }, []);
 
+  // ── GEÄNDERT: activeView nach Rolle setzen ──────────────────────────────────
   const checkAuthStatus = () => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
@@ -257,8 +256,16 @@ export default function AlugMarketplace() {
         const parsedUser = JSON.parse(user);
         setIsUserLoggedIn(true);
         setCurrentUser(parsedUser);
-        if (parsedUser.isAdmin || adminStatus) setIsAdmin(true);
-        if (parsedUser.isPartner) { setIsPartner(true); setPartnerApproved(parsedUser.partnerApproved); }
+        if (parsedUser.isAdmin || adminStatus) {
+          setIsAdmin(true);
+          setActiveView('admin');
+        } else if (parsedUser.isPartner) {
+          setIsPartner(true);
+          setPartnerApproved(parsedUser.partnerApproved);
+          setActiveView('partner');
+        } else {
+          setActiveView('dashboard');
+        }
       } catch (err) {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -369,11 +376,13 @@ export default function AlugMarketplace() {
       localStorage.setItem('isAdmin', 'true');
       setShowAdminLogin(false);
       setAdminPassword('');
+      setActiveView('admin');
       showSuccess('Admin-Modus aktiviert! 🔓');
     } catch (err) { showError('Admin-Login fehlgeschlagen'); }
     finally { setLoading(false); }
   };
 
+  // ── GEÄNDERT: activeView nach Rolle ─────────────────────────────────────────
   const handleUserLogin = async () => {
     setLoading(true);
     try {
@@ -382,8 +391,17 @@ export default function AlugMarketplace() {
       localStorage.setItem('user', JSON.stringify(data.user));
       setIsUserLoggedIn(true);
       setCurrentUser(data.user);
-      if (data.user.isAdmin) { setIsAdmin(true); localStorage.setItem('isAdmin', 'true'); }
-      if (data.user.isPartner) { setIsPartner(true); setPartnerApproved(data.user.partnerApproved); }
+      if (data.user.isAdmin) {
+        setIsAdmin(true);
+        localStorage.setItem('isAdmin', 'true');
+        setActiveView('admin');
+      } else if (data.user.isPartner) {
+        setIsPartner(true);
+        setPartnerApproved(data.user.partnerApproved);
+        setActiveView('partner');
+      } else {
+        setActiveView('dashboard');
+      }
       setShowUserAuth(false);
       setUserForm({ email: '', password: '', name: '', confirmPassword: '' });
       showSuccess('Erfolgreich angemeldet!');
@@ -391,6 +409,7 @@ export default function AlugMarketplace() {
     finally { setLoading(false); }
   };
 
+  // ── GEÄNDERT: nach Reg direkt zum Dashboard ──────────────────────────────────
   const handleUserRegister = async () => {
     if (!userForm.email || !userForm.password || !userForm.name) { showError('Bitte fülle alle Felder aus!'); return; }
     if (userForm.password !== userForm.confirmPassword) { showError('Passwörter stimmen nicht überein!'); return; }
@@ -401,6 +420,7 @@ export default function AlugMarketplace() {
       localStorage.setItem('user', JSON.stringify(data.user));
       setIsUserLoggedIn(true);
       setCurrentUser(data.user);
+      setActiveView('dashboard'); // ← NEU
       setShowUserAuth(false);
       setUserForm({ email: '', password: '', name: '', confirmPassword: '' });
       showSuccess('Erfolgreich registriert!');
@@ -408,6 +428,7 @@ export default function AlugMarketplace() {
     finally { setLoading(false); }
   };
 
+  // ── GEÄNDERT: nach Partner-Reg zum Partner-View ──────────────────────────────
   const handlePartnerRegister = async () => {
     if (!userForm.email || !userForm.password || !userForm.name) { showError('Bitte fülle alle Felder aus!'); return; }
     if (userForm.password !== userForm.confirmPassword) { showError('Passwörter stimmen nicht überein!'); return; }
@@ -426,6 +447,7 @@ export default function AlugMarketplace() {
       setCurrentUser(data.user);
       setIsPartner(true);
       setPartnerApproved(false);
+      setActiveView('partner'); // ← NEU
       setShowUserAuth(false);
       setUserForm({ email: '', password: '', name: '', confirmPassword: '' });
       showSuccess('Partner-Account erstellt! Warte auf Admin-Freigabe.');
@@ -433,6 +455,7 @@ export default function AlugMarketplace() {
     finally { setLoading(false); }
   };
 
+  // ── GEÄNDERT: Logout → zurück zur Landing Page ───────────────────────────────
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -442,7 +465,7 @@ export default function AlugMarketplace() {
     setIsAdmin(false);
     setIsPartner(false);
     setPartnerApproved(false);
-    setActiveView('shop');
+    setActiveView('landing'); // ← GEÄNDERT (war 'shop')
     showSuccess('Erfolgreich abgemeldet');
   };
 
@@ -592,6 +615,78 @@ export default function AlugMarketplace() {
     }
   });
 
+  // ── Auth Modal (wiederverwendet auf Landing Page + App) ──────────────────────
+  const AuthModal = () => (
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-purple-500">
+        <div className="flex gap-2 mb-6">
+          <button onClick={() => setAuthMode('login')} className={`flex-1 py-2 rounded-lg text-sm ${authMode === 'login' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300'}`}>Login</button>
+          <button onClick={() => setAuthMode('register')} className={`flex-1 py-2 rounded-lg text-sm ${authMode === 'register' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300'}`}>Affiliate</button>
+          <button onClick={() => setAuthMode('register-partner')} className={`flex-1 py-2 rounded-lg text-sm ${authMode === 'register-partner' ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300'}`}>Partner</button>
+        </div>
+        {authMode === 'register-partner' && (
+          <div className="mb-4 bg-green-900 border border-green-600 rounded-lg p-3">
+            <p className="text-green-300 text-sm font-semibold">🤝 Partner-Account</p>
+            <p className="text-green-400 text-xs mt-1">Als Partner kannst du eigene Produkte eintragen und von Affiliates bewerben lassen. Dein Account muss vom Admin genehmigt werden.</p>
+          </div>
+        )}
+        {authMode === 'login' ? (
+          <div className="space-y-4">
+            <input type="email" value={userForm.email} onChange={(e) => setUserForm({ ...userForm, email: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Email" />
+            <input type="password" value={userForm.password} onChange={(e) => setUserForm({ ...userForm, password: e.target.value })} onKeyPress={(e) => e.key === 'Enter' && handleUserLogin()} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Passwort" />
+            <div className="flex gap-3">
+              <button onClick={handleUserLogin} disabled={loading} className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg disabled:opacity-50">{loading ? 'Loading...' : 'Login'}</button>
+              <button onClick={() => setShowUserAuth(false)} className="flex-1 bg-gray-700 text-gray-300 px-4 py-2 rounded-lg">Abbrechen</button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <input type="text" value={userForm.name} onChange={(e) => setUserForm({ ...userForm, name: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Name" />
+            <input type="email" value={userForm.email} onChange={(e) => setUserForm({ ...userForm, email: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Email" />
+            <input type="password" value={userForm.password} onChange={(e) => setUserForm({ ...userForm, password: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Passwort" />
+            <input type="password" value={userForm.confirmPassword} onChange={(e) => setUserForm({ ...userForm, confirmPassword: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Passwort bestätigen" />
+            <div className="flex gap-3">
+              <button onClick={authMode === 'register-partner' ? handlePartnerRegister : handleUserRegister} disabled={loading} className={`flex-1 text-white px-4 py-2 rounded-lg disabled:opacity-50 ${authMode === 'register-partner' ? 'bg-green-600' : 'bg-purple-600'}`}>{loading ? 'Loading...' : 'Registrieren'}</button>
+              <button onClick={() => setShowUserAuth(false)} className="flex-1 bg-gray-700 text-gray-300 px-4 py-2 rounded-lg">Abbrechen</button>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // LANDING PAGE GATE — nicht eingeloggt → Landing Page zeigen
+  // ══════════════════════════════════════════════════════════════════════════
+  if (!isUserLoggedIn) {
+    return (
+      <div>
+        {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
+        {success && <SuccessAlert message={success} onClose={() => setSuccess(null)} />}
+        {showUserAuth && <AuthModal />}
+        {showAdminLogin && (
+          <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
+            <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full border-2 border-yellow-500">
+              <h2 className="text-2xl font-bold mb-4 text-white flex items-center gap-2"><Lock className="text-yellow-400" />Admin Login</h2>
+              <input type="password" value={adminPassword} onChange={(e) => setAdminPassword(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin()} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white mb-4" placeholder="Admin-Passwort" autoFocus />
+              <div className="flex gap-3">
+                <button onClick={handleAdminLogin} disabled={loading} className="flex-1 bg-yellow-600 text-white px-4 py-2 rounded-lg font-semibold disabled:opacity-50">{loading ? 'Anmelden...' : 'Anmelden'}</button>
+                <button onClick={() => { setShowAdminLogin(false); setAdminPassword(''); }} className="flex-1 bg-gray-700 text-gray-300 px-4 py-2 rounded-lg">Abbrechen</button>
+              </div>
+            </div>
+          </div>
+        )}
+        <LandingPage
+          onRegisterClick={() => { setAuthMode('register'); setShowUserAuth(true); }}
+          onLoginClick={() => { setAuthMode('login'); setShowUserAuth(true); }}
+        />
+      </div>
+    );
+  }
+
+  // ══════════════════════════════════════════════════════════════════════════
+  // HAUPT-APP (eingeloggt)
+  // ══════════════════════════════════════════════════════════════════════════
   return (
     <div className="min-h-screen bg-gray-900">
       {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
@@ -652,46 +747,7 @@ export default function AlugMarketplace() {
       )}
 
       {/* USER AUTH MODAL */}
-      {showUserAuth && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-purple-500">
-            <div className="flex gap-2 mb-6">
-              <button onClick={() => setAuthMode('login')} className={`flex-1 py-2 rounded-lg text-sm ${authMode === 'login' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300'}`}>Login</button>
-              <button onClick={() => setAuthMode('register')} className={`flex-1 py-2 rounded-lg text-sm ${authMode === 'register' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-300'}`}>Affiliate</button>
-              <button onClick={() => setAuthMode('register-partner')} className={`flex-1 py-2 rounded-lg text-sm ${authMode === 'register-partner' ? 'bg-green-600 text-white' : 'bg-gray-700 text-gray-300'}`}>Partner</button>
-            </div>
-
-            {authMode === 'register-partner' && (
-              <div className="mb-4 bg-green-900 border border-green-600 rounded-lg p-3">
-                <p className="text-green-300 text-sm font-semibold">🤝 Partner-Account</p>
-                <p className="text-green-400 text-xs mt-1">Als Partner kannst du eigene Produkte eintragen und von Affiliates bewerben lassen. Dein Account muss vom Admin genehmigt werden.</p>
-              </div>
-            )}
-
-            {authMode === 'login' ? (
-              <div className="space-y-4">
-                <input type="email" value={userForm.email} onChange={(e) => setUserForm({ ...userForm, email: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Email" />
-                <input type="password" value={userForm.password} onChange={(e) => setUserForm({ ...userForm, password: e.target.value })} onKeyPress={(e) => e.key === 'Enter' && handleUserLogin()} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Passwort" />
-                <div className="flex gap-3">
-                  <button onClick={handleUserLogin} disabled={loading} className="flex-1 bg-purple-600 text-white px-4 py-2 rounded-lg disabled:opacity-50">{loading ? 'Loading...' : 'Login'}</button>
-                  <button onClick={() => setShowUserAuth(false)} className="flex-1 bg-gray-700 text-gray-300 px-4 py-2 rounded-lg">Cancel</button>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <input type="text" value={userForm.name} onChange={(e) => setUserForm({ ...userForm, name: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Name" />
-                <input type="email" value={userForm.email} onChange={(e) => setUserForm({ ...userForm, email: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Email" />
-                <input type="password" value={userForm.password} onChange={(e) => setUserForm({ ...userForm, password: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Passwort" />
-                <input type="password" value={userForm.confirmPassword} onChange={(e) => setUserForm({ ...userForm, confirmPassword: e.target.value })} className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" placeholder="Passwort bestätigen" />
-                <div className="flex gap-3">
-                  <button onClick={authMode === 'register-partner' ? handlePartnerRegister : handleUserRegister} disabled={loading} className={`flex-1 text-white px-4 py-2 rounded-lg disabled:opacity-50 ${authMode === 'register-partner' ? 'bg-green-600' : 'bg-purple-600'}`}>{loading ? 'Loading...' : 'Registrieren'}</button>
-                  <button onClick={() => setShowUserAuth(false)} className="flex-1 bg-gray-700 text-gray-300 px-4 py-2 rounded-lg">Cancel</button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      {showUserAuth && <AuthModal />}
 
       {/* PAYOUT MODAL */}
       {showPayoutModal && (
@@ -726,14 +782,9 @@ export default function AlugMarketplace() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
 
-        {/* ============================================ */}
-        {/* PARTNER DASHBOARD */}
-        {/* ============================================ */}
         {activeView === 'partner' && isPartner && (
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-white flex items-center gap-3"><Store size={36} className="text-green-400" />Partner Dashboard</h2>
-
-            {/* Noch nicht genehmigt */}
             {!partnerApproved && (
               <div className="bg-yellow-900 border border-yellow-600 rounded-xl p-6">
                 <div className="flex items-center gap-3 mb-2">
@@ -743,30 +794,13 @@ export default function AlugMarketplace() {
                 <p className="text-yellow-400">Dein Partner-Account wurde erstellt und wartet auf die Freigabe durch den Admin. Du wirst benachrichtigt sobald dein Account genehmigt wurde.</p>
               </div>
             )}
-
-            {/* Genehmigt */}
             {partnerApproved && (
               <>
-                {/* Stats */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-6 border border-green-500">
-                    <Package className="text-green-300 mb-2" size={32} />
-                    <p className="text-3xl font-bold text-white">{partnerProducts.length}</p>
-                    <p className="text-sm text-green-300">Meine Produkte</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 border border-blue-500">
-                    <MousePointerClick className="text-blue-300 mb-2" size={32} />
-                    <p className="text-3xl font-bold text-white">{partnerStats.reduce((s, p) => s + parseInt(p.total_clicks || 0), 0)}</p>
-                    <p className="text-sm text-blue-300">Gesamte Clicks</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500">
-                    <TrendingUp className="text-purple-300 mb-2" size={32} />
-                    <p className="text-3xl font-bold text-white">{partnerStats.reduce((s, p) => s + parseInt(p.total_sales || 0), 0)}</p>
-                    <p className="text-sm text-purple-300">Gesamte Sales</p>
-                  </div>
+                  <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-6 border border-green-500"><Package className="text-green-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{partnerProducts.length}</p><p className="text-sm text-green-300">Meine Produkte</p></div>
+                  <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 border border-blue-500"><MousePointerClick className="text-blue-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{partnerStats.reduce((s, p) => s + parseInt(p.total_clicks || 0), 0)}</p><p className="text-sm text-blue-300">Gesamte Clicks</p></div>
+                  <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500"><TrendingUp className="text-purple-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{partnerStats.reduce((s, p) => s + parseInt(p.total_sales || 0), 0)}</p><p className="text-sm text-purple-300">Gesamte Sales</p></div>
                 </div>
-
-                {/* Webhook Info */}
                 <div className="bg-gray-800 rounded-xl border border-green-500 p-6">
                   <button onClick={() => setShowWebhookInfo(!showWebhookInfo)} className="flex items-center justify-between w-full">
                     <h3 className="text-xl font-bold text-white flex items-center gap-2"><Webhook size={22} className="text-green-400" />Webhook URL & Anleitung</h3>
@@ -783,11 +817,7 @@ export default function AlugMarketplace() {
                       </div>
                       <div className="bg-gray-900 rounded-lg p-4 border border-gray-600">
                         <p className="text-sm font-semibold text-white mb-3">📋 Anleitung:</p>
-                        <ol className="space-y-2">
-                          {webhookInfo.instructions?.map((step, i) => (
-                            <li key={i} className="text-sm text-gray-300">{step}</li>
-                          ))}
-                        </ol>
+                        <ol className="space-y-2">{webhookInfo.instructions?.map((step, i) => (<li key={i} className="text-sm text-gray-300">{step}</li>))}</ol>
                       </div>
                       <div className="bg-blue-900 border border-blue-600 rounded-lg p-4">
                         <p className="text-blue-300 text-sm font-semibold">💡 Wie funktioniert ALUG_CODE?</p>
@@ -796,26 +826,12 @@ export default function AlugMarketplace() {
                     </div>
                   )}
                 </div>
-
-                {/* Produkte */}
                 <div className="bg-gray-800 rounded-xl border border-purple-500 p-6">
                   <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-bold text-white">Meine Produkte</h3>
-                    <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-500 text-white px-4 py-2 rounded-lg text-sm">
-                      <Plus size={16} />Produkt hinzufügen
-                    </button>
+                    <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-500 text-white px-4 py-2 rounded-lg text-sm"><Plus size={16} />Produkt hinzufügen</button>
                   </div>
-
-                  {showForm && (
-                    <ProductForm
-                      onSubmit={handlePartnerSubmit}
-                      onCancel={() => setShowForm(false)}
-                      loading={loading}
-                      categories={categories}
-                      title="Produkt einreichen (wird von Admin geprüft)"
-                    />
-                  )}
-
+                  {showForm && <ProductForm onSubmit={handlePartnerSubmit} onCancel={() => setShowForm(false)} loading={loading} categories={categories} title="Produkt einreichen (wird von Admin geprüft)" />}
                   <div className="space-y-3">
                     {partnerProducts.map(product => {
                       const stat = partnerStats.find(s => s.id === product.id);
@@ -825,20 +841,11 @@ export default function AlugMarketplace() {
                             <div>
                               <div className="flex items-center gap-2 mb-1">
                                 <h4 className="text-white font-semibold">{product.name}</h4>
-                                {product.approved
-                                  ? <span className="text-xs bg-green-800 text-green-300 px-2 py-0.5 rounded-full">✅ Live</span>
-                                  : <span className="text-xs bg-yellow-800 text-yellow-300 px-2 py-0.5 rounded-full">⏳ Wartend</span>
-                                }
+                                {product.approved ? <span className="text-xs bg-green-800 text-green-300 px-2 py-0.5 rounded-full">✅ Live</span> : <span className="text-xs bg-yellow-800 text-yellow-300 px-2 py-0.5 rounded-full">⏳ Wartend</span>}
                               </div>
                               <p className="text-gray-400 text-sm">{product.price} · {product.commission_type === 'percentage' ? `${product.commission_value}%` : `${product.commission_value}€`} Commission · {product.attribution_days || 30} Tage Attribution</p>
                             </div>
-                            {stat && (
-                              <div className="text-right text-sm">
-                                <p className="text-blue-400">{stat.total_clicks || 0} Clicks</p>
-                                <p className="text-green-400">{stat.total_sales || 0} Sales</p>
-                                <p className="text-purple-400 font-bold">{parseFloat(stat.total_revenue || 0).toFixed(2)}€</p>
-                              </div>
-                            )}
+                            {stat && (<div className="text-right text-sm"><p className="text-blue-400">{stat.total_clicks || 0} Clicks</p><p className="text-green-400">{stat.total_sales || 0} Sales</p><p className="text-purple-400 font-bold">{parseFloat(stat.total_revenue || 0).toFixed(2)}€</p></div>)}
                           </div>
                         </div>
                       );
@@ -851,13 +858,9 @@ export default function AlugMarketplace() {
           </div>
         )}
 
-        {/* ============================================ */}
-        {/* ADMIN VIEW */}
-        {/* ============================================ */}
         {activeView === 'admin' && isAdmin && (
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-white flex items-center gap-3"><Users size={36} className="text-purple-400" />Admin Dashboard</h2>
-
             {adminStats && (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500"><p className="text-2xl font-bold text-white">{adminStats.total_users}</p><p className="text-xs text-purple-300">Affiliates</p></div>
@@ -868,56 +871,33 @@ export default function AlugMarketplace() {
                 <div className="bg-gradient-to-br from-pink-900 to-pink-800 rounded-lg p-4 border border-pink-500"><p className="text-2xl font-bold text-white">{parseFloat(adminStats.total_revenue || 0).toFixed(0)}€</p><p className="text-xs text-pink-300">Umsatz</p></div>
               </div>
             )}
-
-            {/* Partner genehmigen */}
             <div className="bg-gray-800 rounded-lg border border-green-500 p-6">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Store className="text-green-400" />Partner ({adminPartners.length})</h3>
               <div className="space-y-3">
                 {adminPartners.map(partner => (
                   <div key={partner.id} className="bg-gray-900 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <div>
-                      <p className="text-white font-semibold">{partner.name}</p>
-                      <p className="text-sm text-gray-400">{partner.email}</p>
-                      <p className="text-xs text-gray-500">{partner.approved_products}/{partner.total_products} Produkte genehmigt</p>
-                    </div>
+                    <div><p className="text-white font-semibold">{partner.name}</p><p className="text-sm text-gray-400">{partner.email}</p><p className="text-xs text-gray-500">{partner.approved_products}/{partner.total_products} Produkte genehmigt</p></div>
                     <div className="flex items-center gap-3">
-                      {partner.partner_approved
-                        ? <span className="text-xs bg-green-800 text-green-300 px-3 py-1 rounded-full">✅ Genehmigt</span>
-                        : <span className="text-xs bg-yellow-800 text-yellow-300 px-3 py-1 rounded-full">⏳ Ausstehend</span>
-                      }
-                      {!partner.partner_approved
-                        ? <button onClick={() => handleApprovePartner(partner.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Genehmigen</button>
-                        : <button onClick={() => handleRevokePartner(partner.id)} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Sperren</button>
-                      }
+                      {partner.partner_approved ? <span className="text-xs bg-green-800 text-green-300 px-3 py-1 rounded-full">✅ Genehmigt</span> : <span className="text-xs bg-yellow-800 text-yellow-300 px-3 py-1 rounded-full">⏳ Ausstehend</span>}
+                      {!partner.partner_approved ? <button onClick={() => handleApprovePartner(partner.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Genehmigen</button> : <button onClick={() => handleRevokePartner(partner.id)} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Sperren</button>}
                     </div>
                   </div>
                 ))}
                 {adminPartners.length === 0 && <p className="text-gray-400 text-center py-4">Noch keine Partner</p>}
               </div>
             </div>
-
-            {/* Produkte genehmigen */}
             <div className="bg-gray-800 rounded-lg border border-orange-500 p-6">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Package className="text-orange-400" />Produkte zur Genehmigung</h3>
               <div className="space-y-3">
                 {adminAllProducts.filter(p => !p.approved && p.vendor_id).map(product => (
                   <div key={product.id} className="bg-gray-900 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                    <div>
-                      <p className="text-white font-semibold">{product.name}</p>
-                      <p className="text-sm text-gray-400">von {product.vendor_name || 'Unbekannt'} · {product.price} · {product.commission_value}{product.commission_type === 'percentage' ? '%' : '€'}</p>
-                      <p className="text-xs text-gray-500">{product.category} · {product.attribution_days || 30} Tage</p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button onClick={() => handleApproveProduct(product.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Genehmigen</button>
-                      <button onClick={() => handleRejectProduct(product.id)} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Ablehnen</button>
-                    </div>
+                    <div><p className="text-white font-semibold">{product.name}</p><p className="text-sm text-gray-400">von {product.vendor_name || 'Unbekannt'} · {product.price} · {product.commission_value}{product.commission_type === 'percentage' ? '%' : '€'}</p><p className="text-xs text-gray-500">{product.category} · {product.attribution_days || 30} Tage</p></div>
+                    <div className="flex gap-2"><button onClick={() => handleApproveProduct(product.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Genehmigen</button><button onClick={() => handleRejectProduct(product.id)} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Ablehnen</button></div>
                   </div>
                 ))}
                 {adminAllProducts.filter(p => !p.approved && p.vendor_id).length === 0 && <p className="text-gray-400 text-center py-4">Keine ausstehenden Produkte</p>}
               </div>
             </div>
-
-            {/* Users */}
             <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
               <h3 className="text-xl font-bold text-white mb-4">Affiliates ({adminUsers.filter(u => !u.is_partner).length})</h3>
               <div className="space-y-2 max-h-96 overflow-y-auto">
@@ -929,8 +909,6 @@ export default function AlugMarketplace() {
                 ))}
               </div>
             </div>
-
-            {/* Payout Requests */}
             <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
               <h3 className="text-xl font-bold text-white mb-4">Payout Requests</h3>
               <div className="space-y-3">
@@ -938,18 +916,12 @@ export default function AlugMarketplace() {
                   <div key={payout.id} className="bg-gray-900 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     <div><p className="text-white font-semibold">{payout.user_name}</p><p className="text-sm text-gray-400">{payout.payment_method} - {payout.payment_details}</p></div>
                     <div className="text-right"><p className="text-2xl font-bold text-purple-400">{parseFloat(payout.amount).toFixed(2)}€</p><p className="text-sm">{getStatusBadge(payout.status)}</p></div>
-                    {payout.status === 'pending' && (
-                      <div className="flex gap-2">
-                        <button onClick={() => handleUpdatePayoutStatus(payout.id, 'paid')} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Paid</button>
-                        <button onClick={() => handleUpdatePayoutStatus(payout.id, 'rejected')} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Reject</button>
-                      </div>
-                    )}
+                    {payout.status === 'pending' && (<div className="flex gap-2"><button onClick={() => handleUpdatePayoutStatus(payout.id, 'paid')} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Paid</button><button onClick={() => handleUpdatePayoutStatus(payout.id, 'rejected')} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Reject</button></div>)}
                   </div>
                 ))}
                 {adminPayouts.length === 0 && <p className="text-gray-400 text-center py-8">No requests</p>}
               </div>
             </div>
-
             <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
               <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FileText className="text-purple-400" />Rechtliche Angaben</h3>
               <AdminLegalEditor />
@@ -957,9 +929,6 @@ export default function AlugMarketplace() {
           </div>
         )}
 
-        {/* ============================================ */}
-        {/* LEADERBOARD VIEW */}
-        {/* ============================================ */}
         {activeView === 'leaderboard' && (
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-white flex items-center gap-3"><Trophy size={36} className="text-yellow-400" />Top Performers</h2>
@@ -974,10 +943,7 @@ export default function AlugMarketplace() {
                       {index === 2 && <Medal size={24} className="text-orange-400" />}
                       {index > 2 && <span className="text-gray-400 font-bold">{index + 1}</span>}
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-white font-bold text-lg">{marketer.name}</h4>
-                      <div className="flex gap-4 text-sm text-gray-400"><span>✅ {marketer.conversions} Sales</span><span>🖱 {marketer.clicks} Clicks</span></div>
-                    </div>
+                    <div className="flex-1"><h4 className="text-white font-bold text-lg">{marketer.name}</h4><div className="flex gap-4 text-sm text-gray-400"><span>✅ {marketer.conversions} Sales</span><span>🖱 {marketer.clicks} Clicks</span></div></div>
                     <div className="text-2xl font-bold text-purple-400">{parseFloat(marketer.revenue || 0).toFixed(2)}€</div>
                   </div>
                 ))}
@@ -989,10 +955,7 @@ export default function AlugMarketplace() {
               <div className="space-y-3">
                 {topProducts.map((product, index) => (
                   <div key={product.id} className="flex justify-between items-center p-3 bg-gray-900 rounded">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{index + 1}</span>
-                      <div><p className="text-white font-semibold">{product.name}</p><p className="text-sm text-gray-400">{product.category}</p></div>
-                    </div>
+                    <div className="flex items-center gap-3"><span className="text-2xl">{index + 1}</span><div><p className="text-white font-semibold">{product.name}</p><p className="text-sm text-gray-400">{product.category}</p></div></div>
                     <div className="text-right"><p className="text-purple-400 font-bold">{parseFloat(product.revenue || 0).toFixed(2)}€</p><p className="text-xs text-gray-400">{product.conversions} sales</p></div>
                   </div>
                 ))}
@@ -1002,86 +965,52 @@ export default function AlugMarketplace() {
           </div>
         )}
 
-        {/* ============================================ */}
-        {/* DASHBOARD VIEW */}
-        {/* ============================================ */}
         {activeView === 'dashboard' && (
-          isUserLoggedIn ? (
-            <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-white mb-6">Dashboard</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500"><DollarSign className="text-purple-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{parseFloat(analytics?.total_earnings || 0).toFixed(2)}€</p><p className="text-sm text-purple-300">Total Earnings</p></div>
-                <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 border border-blue-500"><MousePointerClick className="text-blue-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{analytics?.total_clicks || 0}</p><p className="text-sm text-blue-300">Clicks</p></div>
-                <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-6 border border-green-500"><TrendingUp className="text-green-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{analytics?.total_conversions || 0}</p><p className="text-sm text-green-300">Conversions</p></div>
-                <div className="bg-gradient-to-br from-pink-900 to-pink-800 rounded-lg p-6 border border-pink-500"><Link2 className="text-pink-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{analytics?.active_links || 0}</p><p className="text-sm text-pink-300">Active Links</p></div>
+          <div className="space-y-6">
+            <h2 className="text-3xl font-bold text-white mb-6">Dashboard</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500"><DollarSign className="text-purple-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{parseFloat(analytics?.total_earnings || 0).toFixed(2)}€</p><p className="text-sm text-purple-300">Total Earnings</p></div>
+              <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 border border-blue-500"><MousePointerClick className="text-blue-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{analytics?.total_clicks || 0}</p><p className="text-sm text-blue-300">Clicks</p></div>
+              <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-6 border border-green-500"><TrendingUp className="text-green-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{analytics?.total_conversions || 0}</p><p className="text-sm text-green-300">Conversions</p></div>
+              <div className="bg-gradient-to-br from-pink-900 to-pink-800 rounded-lg p-6 border border-pink-500"><Link2 className="text-pink-300 mb-2" size={32} /><p className="text-3xl font-bold text-white">{analytics?.active_links || 0}</p><p className="text-sm text-pink-300">Active Links</p></div>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6"><DailyStatsChart /><ProductStatsChart /></div>
+            <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div><h3 className="text-xl font-bold text-white">💰 Available Balance</h3><p className="text-4xl font-bold text-white mt-2">{parseFloat(balance?.available_balance || 0).toFixed(2)}€</p><p className="text-sm text-purple-300 mt-1">Earned: {parseFloat(balance?.total_earned || 0).toFixed(2)}€ | Paid: {parseFloat(balance?.total_paid || 0).toFixed(2)}€</p></div>
+                <button onClick={() => setShowPayoutModal(true)} disabled={!balance?.available_balance || balance.available_balance < 10} className="bg-white text-purple-900 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"><CreditCard size={20} className="inline mr-2" />Request Payout</button>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <DailyStatsChart />
-                <ProductStatsChart />
-              </div>
-              <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-white">💰 Available Balance</h3>
-                    <p className="text-4xl font-bold text-white mt-2">{parseFloat(balance?.available_balance || 0).toFixed(2)}€</p>
-                    <p className="text-sm text-purple-300 mt-1">Earned: {parseFloat(balance?.total_earned || 0).toFixed(2)}€ | Paid: {parseFloat(balance?.total_paid || 0).toFixed(2)}€</p>
+              {payouts.length > 0 && (
+                <div className="mt-4 border-t border-purple-700 pt-4">
+                  <h4 className="text-white font-semibold mb-2">Recent Payouts</h4>
+                  <div className="space-y-2">
+                    {payouts.slice(0, 3).map(payout => (
+                      <div key={payout.id} className="flex justify-between items-center text-sm"><span className="text-gray-300">{new Date(payout.requested_at).toLocaleDateString()}</span><span className="text-white font-semibold">{parseFloat(payout.amount).toFixed(2)}€</span><span>{getStatusBadge(payout.status)}</span></div>
+                    ))}
                   </div>
-                  <button onClick={() => setShowPayoutModal(true)} disabled={!balance?.available_balance || balance.available_balance < 10} className="bg-white text-purple-900 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <CreditCard size={20} className="inline mr-2" />Request Payout
-                  </button>
                 </div>
-                {payouts.length > 0 && (
-                  <div className="mt-4 border-t border-purple-700 pt-4">
-                    <h4 className="text-white font-semibold mb-2">Recent Payouts</h4>
-                    <div className="space-y-2">
-                      {payouts.slice(0, 3).map(payout => (
-                        <div key={payout.id} className="flex justify-between items-center text-sm">
-                          <span className="text-gray-300">{new Date(payout.requested_at).toLocaleDateString()}</span>
-                          <span className="text-white font-semibold">{parseFloat(payout.amount).toFixed(2)}€</span>
-                          <span>{getStatusBadge(payout.status)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
-                <h3 className="text-xl font-bold text-white mb-4">My Affiliate Links ({myLinks.length})</h3>
-                {myLinks.length === 0 ? <p className="text-gray-400">No links yet. Go to Shop!</p> : (
-                  <div className="space-y-3">
-                    {myLinks.map(link => {
-                      const fullLink = `${window.location.origin}/aff/${link.link_code}`;
-                      return (
-                        <div key={link.id} className="bg-gray-900 rounded-lg p-4 border border-gray-700">
-                          <div className="flex justify-between mb-2">
-                            <p className="text-white font-semibold">{link.product_name}</p>
-                            <button onClick={() => copyToClipboard(fullLink, link.id)} className="text-purple-400">{copiedId === link.id ? <Check size={16} /> : <Copy size={16} />}</button>
-                          </div>
-                          <code className="text-xs text-gray-400 break-all block mb-2">{fullLink}</code>
-                          <div className="flex gap-4 text-xs">
-                            <span className="text-gray-400">🖱 {link.clicks || 0} Clicks</span>
-                            <span className="text-gray-400">✅ {link.conversions || 0} Sales</span>
-                            <span className="text-purple-400 font-semibold">💰 {parseFloat(link.revenue || 0).toFixed(2)}€</span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+              )}
             </div>
-          ) : (
-            <div className="text-center py-16 bg-gray-800 rounded-xl border border-gray-700">
-              <Lock size={64} className="mx-auto text-purple-400 mb-4" />
-              <p className="text-white text-lg mb-4">Please login to see your dashboard</p>
-              <button onClick={() => { setShowUserAuth(true); setAuthMode('login'); }} className="bg-purple-600 text-white px-6 py-3 rounded-lg"><LogIn size={18} className="inline mr-2" />Login Now</button>
+            <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
+              <h3 className="text-xl font-bold text-white mb-4">My Affiliate Links ({myLinks.length})</h3>
+              {myLinks.length === 0 ? <p className="text-gray-400">No links yet. Go to Shop!</p> : (
+                <div className="space-y-3">
+                  {myLinks.map(link => {
+                    const fullLink = `${window.location.origin}/aff/${link.link_code}`;
+                    return (
+                      <div key={link.id} className="bg-gray-900 rounded-lg p-4 border border-gray-700">
+                        <div className="flex justify-between mb-2"><p className="text-white font-semibold">{link.product_name}</p><button onClick={() => copyToClipboard(fullLink, link.id)} className="text-purple-400">{copiedId === link.id ? <Check size={16} /> : <Copy size={16} />}</button></div>
+                        <code className="text-xs text-gray-400 break-all block mb-2">{fullLink}</code>
+                        <div className="flex gap-4 text-xs"><span className="text-gray-400">🖱 {link.clicks || 0} Clicks</span><span className="text-gray-400">✅ {link.conversions || 0} Sales</span><span className="text-purple-400 font-semibold">💰 {parseFloat(link.revenue || 0).toFixed(2)}€</span></div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-          )
+          </div>
         )}
 
-        {/* ============================================ */}
-        {/* SHOP VIEW */}
-        {/* ============================================ */}
         {activeView === 'shop' && (
           <>
             <div className="mb-6">
@@ -1090,64 +1019,20 @@ export default function AlugMarketplace() {
                 <input type="text" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search products..." className="w-full pl-12 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white" />
               </div>
               <div className="flex flex-wrap gap-3 mb-4">
-                <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2"><Filter size={16} />Category</label>
-                  <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
-                    <option value="all">All Categories</option>
-                    {categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}
-                  </select>
-                </div>
-                <div className="flex-1 min-w-[200px]">
-                  <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2"><SlidersHorizontal size={16} />Sort</label>
-                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
-                    <option value="newest">Newest</option>
-                    <option value="name-asc">Name (A-Z)</option>
-                    <option value="name-desc">Name (Z-A)</option>
-                    <option value="price-asc">Price (Low-High)</option>
-                    <option value="price-desc">Price (High-Low)</option>
-                    <option value="commission-high">Highest Commission</option>
-                    <option value="commission-low">Lowest Commission</option>
-                  </select>
-                </div>
-                {isAdmin && (
-                  <div className="flex items-end">
-                    <button onClick={() => setShowCategoryManager(!showCategoryManager)} className="bg-gray-700 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-600 border border-purple-500 flex items-center gap-2"><SlidersHorizontal size={18} />Manage</button>
-                  </div>
-                )}
+                <div className="flex-1 min-w-[200px]"><label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2"><Filter size={16} />Category</label><select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"><option value="all">All Categories</option>{categories.map(cat => (<option key={cat} value={cat}>{cat}</option>))}</select></div>
+                <div className="flex-1 min-w-[200px]"><label className="block text-sm font-medium text-gray-300 mb-2 flex items-center gap-2"><SlidersHorizontal size={16} />Sort</label><select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"><option value="newest">Newest</option><option value="name-asc">Name (A-Z)</option><option value="name-desc">Name (Z-A)</option><option value="price-asc">Price (Low-High)</option><option value="price-desc">Price (High-Low)</option><option value="commission-high">Highest Commission</option><option value="commission-low">Lowest Commission</option></select></div>
+                {isAdmin && (<div className="flex items-end"><button onClick={() => setShowCategoryManager(!showCategoryManager)} className="bg-gray-700 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-600 border border-purple-500 flex items-center gap-2"><SlidersHorizontal size={18} />Manage</button></div>)}
               </div>
               {showCategoryManager && isAdmin && (
                 <div className="bg-gray-800 rounded-lg border border-purple-500 p-4 mb-4">
                   <h3 className="text-white font-semibold mb-3">Manage Categories</h3>
-                  <div className="flex gap-2 mb-3">
-                    <input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="New category..." className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" onKeyPress={(e) => e.key === 'Enter' && addCategory()} />
-                    <button onClick={addCategory} className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} />Add</button>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {categories.map(cat => (
-                      <div key={cat} className="bg-gray-700 px-3 py-1 rounded-full flex items-center gap-2 text-sm text-white">{cat}<button onClick={() => deleteCategory(cat)} className="text-red-400 hover:text-red-300"><X size={14} /></button></div>
-                    ))}
-                  </div>
+                  <div className="flex gap-2 mb-3"><input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)} placeholder="New category..." className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white" onKeyPress={(e) => e.key === 'Enter' && addCategory()} /><button onClick={addCategory} className="bg-purple-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Plus size={18} />Add</button></div>
+                  <div className="flex flex-wrap gap-2">{categories.map(cat => (<div key={cat} className="bg-gray-700 px-3 py-1 rounded-full flex items-center gap-2 text-sm text-white">{cat}<button onClick={() => deleteCategory(cat)} className="text-red-400 hover:text-red-300"><X size={14} /></button></div>))}</div>
                 </div>
               )}
             </div>
-
-            {isAdmin && (
-              <>
-                <button onClick={() => setShowForm(!showForm)} className="mb-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg shadow-lg"><ShoppingBag size={20} />Add Product</button>
-                {showForm && (
-                  <ProductForm
-                    onSubmit={handleSubmit}
-                    onCancel={() => setShowForm(false)}
-                    loading={loading}
-                    categories={categories}
-                    title="Create Product"
-                  />
-                )}
-              </>
-            )}
-
+            {isAdmin && (<><button onClick={() => setShowForm(!showForm)} className="mb-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-lg shadow-lg"><ShoppingBag size={20} />Add Product</button>{showForm && <ProductForm onSubmit={handleSubmit} onCancel={() => setShowForm(false)} loading={loading} categories={categories} title="Create Product" />}</>)}
             <div className="mb-4 text-gray-400 text-sm">{sortedProducts.length} product{sortedProducts.length !== 1 && 's'} found</div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {sortedProducts.map((product) => {
                 const hasLink = myLinks.find(l => l.product_id === product.id);
@@ -1164,20 +1049,12 @@ export default function AlugMarketplace() {
                       <h3 className="text-lg font-bold text-white mb-2">{product.name}</h3>
                       <p className="text-gray-400 text-sm mb-3 h-10 line-clamp-2">{product.description}</p>
                       <div className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-3">{product.price}</div>
-                      <div className="bg-gradient-to-r from-purple-900 to-pink-900 border border-purple-500 rounded-lg p-3 mb-3">
-                        <div className="flex items-center gap-2 text-purple-300"><TrendingUp size={16} /><span className="text-sm font-semibold">Commission:</span></div>
-                        <p className="text-lg font-bold text-purple-200 mt-1">{product.commission_type === 'percentage' ? `${product.commission_value}%` : `${product.commission_value}€ per sale`}</p>
-                      </div>
+                      <div className="bg-gradient-to-r from-purple-900 to-pink-900 border border-purple-500 rounded-lg p-3 mb-3"><div className="flex items-center gap-2 text-purple-300"><TrendingUp size={16} /><span className="text-sm font-semibold">Commission:</span></div><p className="text-lg font-bold text-purple-200 mt-1">{product.commission_type === 'percentage' ? `${product.commission_value}%` : `${product.commission_value}€ per sale`}</p></div>
                       {!isPartner && (!fullLink ? (
                         <button onClick={() => generateAffiliateLink(product.id)} className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg hover:from-purple-700 hover:to-pink-700 text-sm font-medium shadow-lg"><Link2 size={16} />Generate Link</button>
                       ) : (
                         <div className="bg-gray-900 rounded-lg p-3 border border-purple-500">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-semibold text-purple-300">Your Link</span>
-                            <button onClick={() => copyToClipboard(fullLink, product.id)} className="text-purple-400 flex items-center gap-1">
-                              {copiedId === product.id ? <><Check size={14} /><span className="text-xs">Copied!</span></> : <><Copy size={14} /><span className="text-xs">Copy</span></>}
-                            </button>
-                          </div>
+                          <div className="flex items-center justify-between mb-2"><span className="text-xs font-semibold text-purple-300">Your Link</span><button onClick={() => copyToClipboard(fullLink, product.id)} className="text-purple-400 flex items-center gap-1">{copiedId === product.id ? <><Check size={14} /><span className="text-xs">Copied!</span></> : <><Copy size={14} /><span className="text-xs">Copy</span></>}</button></div>
                           <code className="text-xs text-gray-400 break-all block bg-gray-800 p-2 rounded">{fullLink}</code>
                         </div>
                       ))}
