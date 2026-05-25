@@ -469,7 +469,7 @@ export default function AlugMarketplace() {
   const publicViews = ['landing','shop','leaderboard'];
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen" style={{background:'#07060f'}}>
       {error && <ErrorAlert message={error} onClose={()=>setError(null)} />}
       {success && <SuccessAlert message={success} onClose={()=>setSuccess(null)} />}
 
@@ -512,57 +512,60 @@ export default function AlugMarketplace() {
         </div>
       )}
 
-      {/* ═══ NAVBAR — immer sichtbar ═══════════════════════════════════════════ */}
-      <div className="bg-gray-800 shadow-lg border-b border-purple-500 sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
-          <div className="flex justify-between items-center gap-2">
-            {/* Logo */}
-            <button onClick={()=>setActiveView(isUserLoggedIn?(isAdmin?'admin':isPartner?'partner':'dashboard'):'landing')} className="flex items-center gap-3 flex-shrink-0">
-              <div className="bg-gradient-to-br from-purple-600 to-pink-400 p-2 rounded-lg shadow-lg"><Handshake size={24} className="text-white"/></div>
-              <div className="hidden sm:block"><h1 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Alug</h1><p className="text-xs text-gray-400">Your Affiliate Plug</p></div>
-            </button>
+      {/* ═══ NAVBAR — NUR wenn NICHT auf Landing Page ══════════════════════════ */}
+      {activeView !== 'landing' && (
+        <div style={{background:'#0d0b1a',borderBottom:'1px solid rgba(191,90,242,.18)'}} className="shadow-lg sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+            <div className="flex justify-between items-center gap-2">
+              {/* Logo */}
+              <button onClick={()=>setActiveView(isUserLoggedIn?(isAdmin?'admin':isPartner?'partner':'dashboard'):'landing')} className="flex items-center gap-3 flex-shrink-0">
+                <img
+                  src={`${process.env.PUBLIC_URL}/alug-logo.jpg`}
+                  alt="alug"
+                  style={{height:'34px',mixBlendMode:'screen',objectFit:'contain'}}
+                  onError={e=>{e.target.style.display='none';e.target.nextSibling.style.display='block';}}
+                />
+                <span style={{display:'none',fontFamily:'Syne,sans-serif',fontWeight:800,fontSize:'20px',background:'linear-gradient(135deg,#bf5af2,#ff2d78)',WebkitBackgroundClip:'text',WebkitTextFillColor:'transparent'}}>alug</span>
+              </button>
 
-            {/* Nav Links */}
-            <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-              {/* Shop & Leaderboard: immer verfügbar */}
-              <button onClick={()=>setActiveView('shop')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm ${activeView==='shop'?'bg-purple-600 text-white':'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}><ShoppingBag size={14} className="inline mr-1"/>Shop</button>
-              <button onClick={()=>setActiveView('leaderboard')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm ${activeView==='leaderboard'?'bg-purple-600 text-white':'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}><Trophy size={14} className="inline mr-1"/>Board</button>
+              {/* Nav Links */}
+              <div className="flex flex-wrap items-center gap-1 sm:gap-2">
+                <button onClick={()=>setActiveView('shop')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='shop'?'bg-purple-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><ShoppingBag size={14} className="inline mr-1"/>Shop</button>
+                <button onClick={()=>setActiveView('leaderboard')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='leaderboard'?'bg-purple-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><Trophy size={14} className="inline mr-1"/>Board</button>
+                {isUserLoggedIn && !isPartner && <button onClick={()=>setActiveView('dashboard')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='dashboard'?'bg-purple-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><BarChart3 size={14} className="inline mr-1"/>Dashboard</button>}
+                {isPartner && <button onClick={()=>setActiveView('partner')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='partner'?'bg-green-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><Store size={14} className="inline mr-1"/>Partner</button>}
+                {isAdmin && <button onClick={()=>setActiveView('admin')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='admin'?'bg-purple-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><Users size={14} className="inline mr-1"/>Admin</button>}
 
-              {/* Nur eingeloggt */}
-              {isUserLoggedIn && !isPartner && <button onClick={()=>setActiveView('dashboard')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm ${activeView==='dashboard'?'bg-purple-600 text-white':'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}><BarChart3 size={14} className="inline mr-1"/>Dashboard</button>}
-              {isPartner && <button onClick={()=>setActiveView('partner')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm ${activeView==='partner'?'bg-green-600 text-white':'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}><Store size={14} className="inline mr-1"/>Partner</button>}
-              {isAdmin && <button onClick={()=>setActiveView('admin')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm ${activeView==='admin'?'bg-purple-600 text-white':'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}><Users size={14} className="inline mr-1"/>Admin</button>}
+                {isUserLoggedIn ? (
+                  <>
+                    <div style={{background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.08)'}} className="flex items-center gap-1 px-2 sm:px-3 py-2 rounded-lg">
+                      <User size={14} className="text-purple-400"/>
+                      <span className="text-xs sm:text-sm text-white hidden md:inline">{currentUser?.name}</span>
+                      {isAdmin && <Lock size={12} className="text-yellow-400"/>}
+                      {isPartner && <Store size={12} className="text-green-400"/>}
+                    </div>
+                    <button onClick={handleLogout} style={{background:'rgba(255,255,255,.06)'}} className="text-gray-300 p-2 rounded-lg hover:bg-white/10 transition-all" title="Ausloggen"><LogOut size={14}/></button>
+                  </>
+                ) : (
+                  <button onClick={()=>{setAuthMode('login');setShowUserAuth(true);}} style={{background:'linear-gradient(135deg,#bf5af2,#ff2d78)'}} className="text-white px-3 py-2 rounded-lg text-xs sm:text-sm font-medium"><LogIn size={14} className="inline mr-1"/>Login</button>
+                )}
 
-              {/* User */}
-              {isUserLoggedIn ? (
-                <>
-                  <div className="flex items-center gap-1 bg-gray-700 px-2 sm:px-3 py-2 rounded-lg">
-                    <User size={14} className="text-purple-400"/>
-                    <span className="text-xs sm:text-sm text-white hidden md:inline">{currentUser?.name}</span>
-                    {isAdmin && <Lock size={12} className="text-yellow-400"/>}
-                    {isPartner && <Store size={12} className="text-green-400"/>}
-                  </div>
-                  <button onClick={handleLogout} className="bg-gray-700 text-gray-200 p-2 rounded-lg hover:bg-gray-600" title="Ausloggen"><LogOut size={14}/></button>
-                </>
-              ) : (
-                <button onClick={()=>{setAuthMode('login');setShowUserAuth(true);}} className="bg-purple-600 text-white px-2 sm:px-3 py-2 rounded-lg hover:bg-purple-700 text-xs sm:text-sm"><LogIn size={14} className="inline mr-1"/>Login</button>
-              )}
-
-              {/* Admin Login Button — immer sichtbar */}
-              {!isAdmin && (
-                <button onClick={()=>setShowAdminLogin(true)} className="bg-yellow-600 text-white p-2 rounded-lg hover:bg-yellow-700 border border-yellow-400" title="Admin Login"><Lock size={14}/></button>
-              )}
+                {!isAdmin && (
+                  <button onClick={()=>setShowAdminLogin(true)} className="bg-yellow-600 text-white p-2 rounded-lg hover:bg-yellow-700 border border-yellow-500 transition-all" title="Admin Login"><Lock size={14}/></button>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* ═══ LANDING PAGE VIEW ═════════════════════════════════════════════════ */}
+      {/* ═══ LANDING PAGE VIEW — hat eigene Navbar ═════════════════════════════ */}
       {activeView==='landing' && (
         <div>
           <LandingPage
             onRegisterClick={()=>{setAuthMode('register');setShowUserAuth(true);}}
             onLoginClick={()=>{setAuthMode('login');setShowUserAuth(true);}}
+            onPartnerRegisterClick={()=>{setAuthMode('register-partner');setShowUserAuth(true);}}
           />
           <Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/>
           <CookieBanner/>
@@ -572,7 +575,7 @@ export default function AlugMarketplace() {
 
       {/* ═══ APP VIEWS ═════════════════════════════════════════════════════════ */}
       {activeView!=='landing' && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8" style={{minHeight:'calc(100vh - 60px)'}}>
 
           {/* PARTNER VIEW */}
           {activeView==='partner' && isPartner && (
