@@ -152,7 +152,7 @@ const CSS = `
 
 /* ── Nav ── */
 .alp-nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid rgba(255,255,255,.05);position:sticky;top:0;z-index:40;background:#07060f}
-.alp-logo{display:block;mix-blend-mode:screen;height:38px;width:auto;object-fit:contain}
+.alp-logo{display:block;mix-blend-mode:screen;height:44px;width:auto;object-fit:contain}
 .alp-logo-fallback{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;background:linear-gradient(135deg,#bf5af2,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .alp-nav-r{display:flex;gap:10px;align-items:center}
 .alp-nav-login{background:transparent;border:none;color:rgba(255,255,255,.38);font-size:13px;cursor:pointer;font-family:inherit;padding:0;transition:color .15s}
