@@ -141,7 +141,7 @@ function detectLang() {
 
 const CSS = `
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
-.alp{font-family:'DM Sans',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;background:#07060f;color:#fff;min-height:100vh}
+.alp{font-family:'DM Sans',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;background:#07060f;color:#fff;min-height:100vh;overflow-x:hidden;width:100%}
 .alp *{box-sizing:border-box}
 
 /* ── Lang bar ── */
@@ -151,8 +151,8 @@ const CSS = `
 .alp-lb.alp-on{background:rgba(191,90,242,.14);border-color:rgba(191,90,242,.4);color:#bf5af2}
 
 /* ── Nav ── */
-.alp-nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid rgba(255,255,255,.05);position:sticky;top:0;z-index:40;background:#07060f}
-.alp-logo{display:block;mix-blend-mode:screen;height:44px;width:auto;object-fit:contain}
+.alp-nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid rgba(255,255,255,.05);position:sticky;top:0;z-index:40;background:#100a20}
+.alp-logo{display:block;mix-blend-mode:screen;height:44px;width:auto;object-fit:contain;filter:brightness(1.1) contrast(1.05)}
 .alp-logo-fallback{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;background:linear-gradient(135deg,#bf5af2,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .alp-nav-r{display:flex;gap:10px;align-items:center}
 .alp-nav-login{background:transparent;border:none;color:rgba(255,255,255,.38);font-size:13px;cursor:pointer;font-family:inherit;padding:0;transition:color .15s}
@@ -161,14 +161,14 @@ const CSS = `
 .alp-nav-btn:hover{opacity:.88}
 
 /* ── Hero ── */
-.alp-hero{padding:56px 40px 44px;text-align:center}
+.alp-hero{padding:56px 40px 44px;text-align:center;overflow:hidden}
 .alp-eyebrow{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:18px}
-.alp-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:44px;line-height:1.07;margin-bottom:16px;letter-spacing:-0.5px}
+.alp-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:40px;line-height:1.07;margin-bottom:16px;letter-spacing:-0.5px;word-break:break-word;overflow-wrap:break-word}
 .alp-h1 em{background:linear-gradient(130deg,#bf5af2,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
 .alp-sub{font-size:15px;color:rgba(255,255,255,.38);line-height:1.7;max-width:600px;margin:0 auto;font-weight:300}
 
 /* ── Tracks ── */
-.alp-tracks{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:0 40px 40px;max-width:1200px;margin:0 auto}
+.alp-tracks{display:grid;grid-template-columns:1fr 1fr;gap:24px;padding:0 40px 40px;max-width:1200px;margin:0 auto;width:100%;box-sizing:border-box}
 .alp-track{display:flex;flex-direction:column}
 
 /* track header */
@@ -232,7 +232,7 @@ const CSS = `
   .alp-nav,.alp-langs{padding-left:60px;padding-right:60px}
   .alp-tracks{padding:0 60px 56px}
   .alp-bar{padding:28px 60px}
-  .alp-h1{font-size:52px}
+  .alp-h1{font-size:46px}
 }
 `;
 
