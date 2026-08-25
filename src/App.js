@@ -567,7 +567,7 @@ export default function AlugMarketplace() {
             onLoginClick={()=>{setAuthMode('login');setShowUserAuth(true);}}
             onPartnerRegisterClick={()=>{setAuthMode('register-partner');setShowUserAuth(true);}}
           />
-          <Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/>
+          <div style={{background:'#07060f'}}><Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/></div>
           <CookieBanner/>
           {showLegalModal && <LegalModal page={legalPage} onClose={()=>setShowLegalModal(false)}/>}
         </div>
@@ -760,7 +760,7 @@ export default function AlugMarketplace() {
       {/* Footer & Legal — bei allen App-Views außer Landing (Landing hat eigenen) */}
       {activeView!=='landing' && (
         <>
-          <Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/>
+          <div style={{background:'#07060f'}}><Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/></div>
           <CookieBanner/>
           {showLegalModal && <LegalModal page={legalPage} onClose={()=>setShowLegalModal(false)}/>}
         </>
