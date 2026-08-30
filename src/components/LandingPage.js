@@ -12,7 +12,7 @@ const COPY = {
       { h: 'Kostenlosen Account erstellen', t: 'Registrierung in weniger als einer Minute. Keine Kreditkarte erforderlich.' },
       { h: 'Passendes Produkt auswählen', t: 'Alle Produkte auf alug wurden geprüft. Provisionssätze und Konditionen sind transparent einsehbar.' },
       { h: 'Persönlichen Link teilen', t: 'Über Social Media, deinen Blog, Newsletter oder direkte Empfehlungen.' },
-      { h: '💰 Provision erhalten', t: 'Jeder Kauf über deinen Link wird automatisch erfasst und dir gutgeschrieben. Echtzeit-Tracking inklusive.', final: true },
+      { h: 'Provision erhalten', t: 'Jeder Kauf über deinen Link wird automatisch erfasst und dir gutgeschrieben. Echtzeit-Tracking inklusive.', final: true },
     ],
     affCta: 'Als Affiliate starten →',
     parLabel: 'Für Partner', parTitle: 'Produkt listen und\nReichweite gewinnen',
@@ -21,7 +21,7 @@ const COPY = {
       { h: 'Partner-Account registrieren', t: 'Kurze Registrierung als Partner. Unser Team schaltet deinen Account in der Regel innerhalb eines Werktages frei.' },
       { h: 'Produkt und Provision festlegen', t: 'Du gibst an, wie viel Provision Affiliates pro Verkauf erhalten — prozentual oder als Festbetrag.' },
       { h: 'Einmalige Shop-Integration', t: 'Unser Webhook lässt sich in wenigen Minuten einrichten. Vollständig kompatibel mit Shopify und anderen Systemen.' },
-      { h: '🚀 Affiliates bewerben dich', t: 'Dein Produkt wird ab sofort von unserem gesamten Affiliate-Netzwerk beworben. Skalierbar ohne Mehraufwand.', final: true },
+      { h: 'Affiliates bewerben dich', t: 'Dein Produkt wird ab sofort von unserem gesamten Affiliate-Netzwerk beworben. Skalierbar ohne Mehraufwand.', final: true },
     ],
     parCta: 'Als Partner registrieren →',
     bar: [{ n: '0 €', l: 'Keine Einstiegskosten' }, { n: '30 Tage', l: 'Attributionsfenster' }, { n: '100 %', l: 'Erfolgsbasiert' }],
@@ -38,7 +38,7 @@ const COPY = {
       { h: 'Create a free account', t: 'Sign up in under a minute. No credit card required.' },
       { h: 'Choose a product', t: 'All products on alug are verified. Commission rates and terms are fully transparent.' },
       { h: 'Share your personal link', t: 'Via social media, your blog, newsletter or direct recommendations.' },
-      { h: '💰 Receive your commission', t: 'Every purchase through your link is automatically tracked and credited to you. Real-time reporting included.', final: true },
+      { h: 'Receive your commission', t: 'Every purchase through your link is automatically tracked and credited to you. Real-time reporting included.', final: true },
     ],
     affCta: 'Start as an affiliate →',
     parLabel: 'For Partners', parTitle: 'List your product\nand gain reach',
@@ -47,7 +47,7 @@ const COPY = {
       { h: 'Register a partner account', t: 'Quick sign-up as a partner. Our team typically activates your account within one business day.' },
       { h: 'Set your product and commission', t: 'Define how much commission affiliates earn per sale — as a percentage or a fixed amount.' },
       { h: 'One-time shop integration', t: 'Our webhook can be set up in minutes. Fully compatible with Shopify and other platforms.' },
-      { h: '🚀 Affiliates promote you', t: 'Your product is now available to our entire affiliate network. Scalable with zero additional effort.', final: true },
+      { h: 'Affiliates promote you', t: 'Your product is now available to our entire affiliate network. Scalable with zero additional effort.', final: true },
     ],
     parCta: 'Register as a partner →',
     bar: [{ n: '€ 0', l: 'No upfront costs' }, { n: '30 days', l: 'Attribution window' }, { n: '100 %', l: 'Performance-based' }],
@@ -64,7 +64,7 @@ const COPY = {
       { h: 'Crear una cuenta gratuita', t: 'Registro en menos de un minuto. Sin tarjeta de crédito.' },
       { h: 'Elegir un producto adecuado', t: 'Todos los productos en alug han sido verificados. Las comisiones y condiciones son completamente transparentes.' },
       { h: 'Compartir tu enlace personal', t: 'A través de redes sociales, tu blog, newsletter o recomendaciones directas.' },
-      { h: '💰 Recibir tu comisión', t: 'Cada compra a través de tu enlace se registra automáticamente. Seguimiento en tiempo real incluido.', final: true },
+      { h: 'Recibir tu comisión', t: 'Cada compra a través de tu enlace se registra automáticamente. Seguimiento en tiempo real incluido.', final: true },
     ],
     affCta: 'Empezar como afiliado →',
     parLabel: 'Para Partners', parTitle: 'Lista tu producto\ny gana alcance',
@@ -73,7 +73,7 @@ const COPY = {
       { h: 'Registrar una cuenta de partner', t: 'Registro rápido como partner. Nuestro equipo activa tu cuenta habitualmente en un día hábil.' },
       { h: 'Definir producto y comisión', t: 'Tú decides cuánta comisión reciben los afiliados por venta — en porcentaje o como cantidad fija.' },
       { h: 'Integración única en tu tienda', t: 'Nuestro webhook se configura en minutos. Compatible con Shopify y otros sistemas.' },
-      { h: '🚀 Los afiliados te promocionan', t: 'Tu producto está disponible para toda nuestra red de afiliados. Escalable sin esfuerzo adicional.', final: true },
+      { h: 'Los afiliados te promocionan', t: 'Tu producto está disponible para toda nuestra red de afiliados. Escalable sin esfuerzo adicional.', final: true },
     ],
     parCta: 'Registrarse como partner →',
     bar: [{ n: '0 €', l: 'Sin costes iniciales' }, { n: '30 días', l: 'Ventana de atribución' }, { n: '100 %', l: 'Basado en resultados' }],
@@ -90,7 +90,7 @@ const COPY = {
       { h: 'Créer un compte gratuit', t: "Inscription en moins d'une minute. Aucune carte bancaire requise." },
       { h: 'Choisir un produit adapté', t: "Tous les produits sur alug ont été vérifiés. Les taux de commission et les conditions sont entièrement transparents." },
       { h: 'Partager votre lien personnel', t: 'Via les réseaux sociaux, votre blog, newsletter ou recommandations directes.' },
-      { h: '💰 Recevoir votre commission', t: "Chaque achat via votre lien est automatiquement enregistré et crédité. Suivi en temps réel inclus.", final: true },
+      { h: 'Recevoir votre commission', t: "Chaque achat via votre lien est automatiquement enregistré et crédité. Suivi en temps réel inclus.", final: true },
     ],
     affCta: "Démarrer en tant qu'affilié →",
     parLabel: 'Pour les Partenaires', parTitle: 'Référencez votre produit\net gagnez en visibilité',
@@ -116,7 +116,7 @@ const COPY = {
       { h: 'Ücretsiz hesap oluştur', t: 'Bir dakikadan kısa sürede kayıt. Kredi kartı gerekmez.' },
       { h: 'Uygun ürünü seç', t: "Alug'daki tüm ürünler onaylanmıştır. Komisyon oranları ve koşullar tamamen şeffaftır." },
       { h: 'Kişisel linkini paylaş', t: 'Sosyal medya, blog, bülten veya doğrudan tavsiye yoluyla.' },
-      { h: '💰 Komisyonunu al', t: 'Linkin üzerinden gerçekleşen her satış otomatik olarak kaydedilir. Gerçek zamanlı takip dahil.', final: true },
+      { h: 'Komisyonunu al', t: 'Linkin üzerinden gerçekleşen her satış otomatik olarak kaydedilir. Gerçek zamanlı takip dahil.', final: true },
     ],
     affCta: 'Affiliate olarak başla →',
     parLabel: 'Partnerler İçin', parTitle: 'Ürününü listele\nve erişim kazan',
@@ -125,7 +125,7 @@ const COPY = {
       { h: 'Partner hesabı oluştur', t: 'Hızlı partner kaydı. Ekibimiz hesabını genellikle bir iş günü içinde aktive eder.' },
       { h: 'Ürün ve komisyon belirle', t: "Affiliate'lerin satış başına ne kadar kazanacağını belirle — yüzde veya sabit tutar olarak." },
       { h: 'Tek seferlik mağaza entegrasyonu', t: "Webhook'umuz birkaç dakikada kurulur. Shopify ve diğer platformlarla tam uyumludur." },
-      { h: "🚀 Affiliate'ler seni tanıtır", t: "Ürünün tüm affiliate ağımız tarafından tanıtılabilir. Ek çaba gerektirmeden ölçeklenebilir.", final: true },
+      { h: "Affiliate'ler seni tanıtır", t: "Ürünün tüm affiliate ağımız tarafından tanıtılabilir. Ek çaba gerektirmeden ölçeklenebilir.", final: true },
     ],
     parCta: 'Partner olarak kayıt ol →',
     bar: [{ n: '0 €', l: 'Başlangıç maliyeti yok' }, { n: '30 Gün', l: 'Atıf penceresi' }, { n: '% 100', l: 'Performans bazlı' }],
@@ -140,7 +140,7 @@ function detectLang() {
 }
 
 const CSS = `
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
 .alp{font-family:'DM Sans',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;background:#07060f;color:#fff;min-height:100vh;overflow-x:hidden;width:100%}
 .alp *{box-sizing:border-box}
 
@@ -153,7 +153,7 @@ const CSS = `
 /* ── Nav ── */
 .alp-nav{display:flex;justify-content:space-between;align-items:center;padding:16px 40px;border-bottom:1px solid rgba(255,255,255,.05);position:sticky;top:0;z-index:40;background:#100a20}
 .alp-logo{display:block;mix-blend-mode:screen;height:44px;width:auto;object-fit:contain;filter:brightness(1.1) contrast(1.05)}
-.alp-logo-fallback{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;background:linear-gradient(135deg,#bf5af2,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.alp-logo-fallback{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;font-size:22px;background:linear-gradient(135deg,#bf5af2,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .alp-nav-r{display:flex;gap:10px;align-items:center}
 .alp-nav-login{background:transparent;border:none;color:rgba(255,255,255,.38);font-size:13px;cursor:pointer;font-family:inherit;padding:0;transition:color .15s}
 .alp-nav-login:hover{color:rgba(255,255,255,.65)}
@@ -163,7 +163,7 @@ const CSS = `
 /* ── Hero ── */
 .alp-hero{padding:56px 40px 44px;text-align:center;overflow:hidden}
 .alp-eyebrow{font-size:11px;letter-spacing:3px;color:rgba(255,255,255,.22);text-transform:uppercase;margin-bottom:18px}
-.alp-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:40px;line-height:1.07;margin-bottom:16px;letter-spacing:-0.5px;word-break:break-word;overflow-wrap:break-word}
+.alp-h1{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-weight:800;font-size:40px;line-height:1.07;margin-bottom:16px;letter-spacing:-0.5px;word-break:break-word;overflow-wrap:break-word}
 .alp-h1 em{background:linear-gradient(130deg,#bf5af2,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-style:normal}
 .alp-sub{font-size:15px;color:rgba(255,255,255,.38);line-height:1.7;max-width:600px;margin:0 auto;font-weight:300}
 
@@ -207,7 +207,7 @@ const CSS = `
 /* bottom bar */
 .alp-bar{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.05);padding:24px 40px}
 .alp-bar-item{text-align:center}
-.alp-bar-n{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;background:linear-gradient(135deg,#bf5af2,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.alp-bar-n{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:26px;font-weight:700;letter-spacing:-0.3px;background:linear-gradient(135deg,#bf5af2,#ff2d78);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .alp-bar-l{font-size:11px;color:rgba(255,255,255,.24);margin-top:4px;letter-spacing:.3px}
 
 /* ── Mobile ── */
@@ -232,7 +232,7 @@ const CSS = `
   .alp-nav,.alp-langs{padding-left:60px;padding-right:60px}
   .alp-tracks{padding:0 60px 56px}
   .alp-bar{padding:28px 60px}
-  .alp-h1{font-size:46px}
+  .alp-h1{font-size:44px}
 }
 `;
 

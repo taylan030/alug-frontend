@@ -230,6 +230,19 @@ export default function AlugMarketplace() {
     checkAuthStatus();
   }, []);
 
+  // Inject Plus Jakarta Sans font
+  useEffect(() => {
+    if (!document.getElementById('alug-app-font')) {
+      const link = document.createElement('link');
+      link.id = 'alug-app-font';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap';
+      document.head.appendChild(link);
+    }
+  }, []);
+
+
+
   const checkAuthStatus = () => {
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
@@ -530,11 +543,11 @@ export default function AlugMarketplace() {
 
               {/* Nav Links */}
               <div className="flex flex-wrap items-center gap-1 sm:gap-2">
-                <button onClick={()=>setActiveView('shop')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='shop'?'bg-purple-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><ShoppingBag size={14} className="inline mr-1"/>Shop</button>
-                <button onClick={()=>setActiveView('leaderboard')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='leaderboard'?'bg-purple-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><Trophy size={14} className="inline mr-1"/>Board</button>
-                {isUserLoggedIn && !isPartner && <button onClick={()=>setActiveView('dashboard')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='dashboard'?'bg-purple-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><BarChart3 size={14} className="inline mr-1"/>Dashboard</button>}
-                {isPartner && <button onClick={()=>setActiveView('partner')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='partner'?'bg-green-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><Store size={14} className="inline mr-1"/>Partner</button>}
-                {isAdmin && <button onClick={()=>setActiveView('admin')} className={`px-2 sm:px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all ${activeView==='admin'?'bg-purple-600 text-white':'text-gray-400 hover:text-white hover:bg-white/5'}`}><Users size={14} className="inline mr-1"/>Admin</button>}
+                <button onClick={()=>setActiveView('shop')} style={{padding:'6px 12px',borderRadius:'8px',fontSize:'13px',fontWeight:500,display:'flex',alignItems:'center',gap:'6px',background:activeView==='shop'?'rgba(139,92,246,0.2)':' transparent',color:activeView==='shop'?'#a78bfa':'rgba(255,255,255,0.4)',border:'none',cursor:'pointer',transition:'all .15s'}} onMouseEnter={e=>{if(activeView!=='shop')e.currentTarget.style.color='rgba(255,255,255,0.8)'}} onMouseLeave={e=>{if(activeView!=='shop')e.currentTarget.style.color='rgba(255,255,255,0.4)'}}><span style={{width:'24px',height:'24px',borderRadius:'6px',background:'rgba(139,92,246,0.25)',display:'flex',alignItems:'center',justifyContent:'center'}}><ShoppingBag size={13}/></span>Shop</button>
+                <button onClick={()=>setActiveView('leaderboard')} style={{padding:'6px 12px',borderRadius:'8px',fontSize:'13px',fontWeight:500,display:'flex',alignItems:'center',gap:'6px',background:activeView==='leaderboard'?'rgba(245,158,11,0.2)':' transparent',color:activeView==='leaderboard'?'#fbbf24':'rgba(255,255,255,0.4)',border:'none',cursor:'pointer',transition:'all .15s'}}><span style={{width:'24px',height:'24px',borderRadius:'6px',background:'rgba(245,158,11,0.2)',display:'flex',alignItems:'center',justifyContent:'center'}}><Trophy size={13}/></span>Board</button>
+                {isUserLoggedIn && !isPartner && <button onClick={()=>setActiveView('dashboard')} style={{padding:'6px 12px',borderRadius:'8px',fontSize:'13px',fontWeight:500,display:'flex',alignItems:'center',gap:'6px',background:activeView==='dashboard'?'rgba(59,130,246,0.2)':' transparent',color:activeView==='dashboard'?'#60a5fa':'rgba(255,255,255,0.4)',border:'none',cursor:'pointer',transition:'all .15s'}}><span style={{width:'24px',height:'24px',borderRadius:'6px',background:'rgba(59,130,246,0.2)',display:'flex',alignItems:'center',justifyContent:'center'}}><BarChart3 size={13}/></span>Dashboard</button>}
+                {isPartner && <button onClick={()=>setActiveView('partner')} style={{padding:'6px 12px',borderRadius:'8px',fontSize:'13px',fontWeight:500,display:'flex',alignItems:'center',gap:'6px',background:activeView==='partner'?'rgba(16,185,129,0.2)':' transparent',color:activeView==='partner'?'#34d399':'rgba(255,255,255,0.4)',border:'none',cursor:'pointer',transition:'all .15s'}}><span style={{width:'24px',height:'24px',borderRadius:'6px',background:'rgba(16,185,129,0.2)',display:'flex',alignItems:'center',justifyContent:'center'}}><Store size={13}/></span>Partner</button>}
+                {isAdmin && <button onClick={()=>setActiveView('admin')} style={{padding:'6px 12px',borderRadius:'8px',fontSize:'13px',fontWeight:500,display:'flex',alignItems:'center',gap:'6px',background:activeView==='admin'?'rgba(236,72,153,0.2)':' transparent',color:activeView==='admin'?'#f472b6':'rgba(255,255,255,0.4)',border:'none',cursor:'pointer',transition:'all .15s'}}><span style={{width:'24px',height:'24px',borderRadius:'6px',background:'rgba(236,72,153,0.2)',display:'flex',alignItems:'center',justifyContent:'center'}}><Users size={13}/></span>Admin</button>}
 
                 {isUserLoggedIn ? (
                   <>
@@ -567,7 +580,7 @@ export default function AlugMarketplace() {
             onLoginClick={()=>{setAuthMode('login');setShowUserAuth(true);}}
             onPartnerRegisterClick={()=>{setAuthMode('register-partner');setShowUserAuth(true);}}
           />
-          <div style={{background:'#07060f'}}><Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/></div>
+          <div style={{background:'#0a0a14',paddingTop:'1px'}}><Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/></div>
           <CookieBanner/>
           {showLegalModal && <LegalModal page={legalPage} onClose={()=>setShowLegalModal(false)}/>}
         </div>
@@ -580,7 +593,7 @@ export default function AlugMarketplace() {
           {/* PARTNER VIEW */}
           {activeView==='partner' && isPartner && (
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-white flex items-center gap-3"><Store size={36} className="text-green-400"/>Partner Dashboard</h2>
+              <h2 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:'26px',color:'#fff',display:'flex',alignItems:'center',gap:'12px'}}><span style={{width:'36px',height:'36px',borderRadius:'10px',background:'rgba(16,185,129,0.18)',display:'flex',alignItems:'center',justifyContent:'center'}}><Store size={20} color="#34d399"/></span>Partner Dashboard</h2>
               {!partnerApproved && (
                 <div className="bg-yellow-900 border border-yellow-600 rounded-xl p-6">
                   <div className="flex items-center gap-3 mb-2"><Clock size={24} className="text-yellow-400"/><h3 className="text-xl font-bold text-yellow-300">Account wartet auf Genehmigung</h3></div>
@@ -628,7 +641,7 @@ export default function AlugMarketplace() {
           {/* ADMIN VIEW */}
           {activeView==='admin' && isAdmin && (
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-white flex items-center gap-3"><Users size={36} className="text-purple-400"/>Admin Dashboard</h2>
+              <h2 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:'26px',color:'#fff',display:'flex',alignItems:'center',gap:'12px'}}><span style={{width:'36px',height:'36px',borderRadius:'10px',background:'rgba(236,72,153,0.18)',display:'flex',alignItems:'center',justifyContent:'center'}}><Users size={20} color="#f472b6"/></span>Admin Dashboard</h2>
               {adminStats&&(<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                 <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-4 border border-purple-500"><p className="text-2xl font-bold text-white">{adminStats.total_users}</p><p className="text-xs text-purple-300">Affiliates</p></div>
                 <div className="bg-gradient-to-br from-green-900 to-green-800 rounded-lg p-4 border border-green-500"><p className="text-2xl font-bold text-white">{adminStats.total_partners}</p><p className="text-xs text-green-300">Partner</p></div>
@@ -663,13 +676,13 @@ export default function AlugMarketplace() {
           {/* LEADERBOARD VIEW — öffentlich */}
           {activeView==='leaderboard' && (
             <div className="space-y-6">
-              <h2 className="text-3xl font-bold text-white flex items-center gap-3"><Trophy size={36} className="text-yellow-400"/>Top Performers</h2>
+              <h2 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:'26px',color:'#fff',display:'flex',alignItems:'center',gap:'12px'}}><span style={{width:'36px',height:'36px',borderRadius:'10px',background:'rgba(245,158,11,0.18)',display:'flex',alignItems:'center',justifyContent:'center'}}><Trophy size={20} color="#fbbf24"/></span>Top Performers</h2>
               <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
-                <h3 className="text-xl font-bold text-white mb-4">🏆 Top Marketers</h3>
+                <h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'17px',color:'#fff',marginBottom:'16px',display:'flex',alignItems:'center',gap:'8px'}}><Trophy size={16} color="#fbbf24"/>Top Marketers</h3>
                 <div className="space-y-4">{topMarketers.map((m,i)=>(<div key={m.id} className="flex items-center gap-4 p-4 rounded-lg bg-gray-900"><div className="flex items-center justify-center w-12 h-12 rounded-full bg-gray-700">{i===0&&<Trophy size={24} className="text-yellow-400"/>}{i===1&&<Medal size={24} className="text-gray-300"/>}{i===2&&<Medal size={24} className="text-orange-400"/>}{i>2&&<span className="text-gray-400 font-bold">{i+1}</span>}</div><div className="flex-1"><h4 className="text-white font-bold text-lg">{m.name}</h4><div className="flex gap-4 text-sm text-gray-400"><span>✅ {m.conversions} Sales</span><span>🖱 {m.clicks} Clicks</span></div></div><div className="text-2xl font-bold text-purple-400">{parseFloat(m.revenue||0).toFixed(2)}€</div></div>))}{topMarketers.length===0&&<p className="text-gray-400 text-center py-8">No data yet</p>}</div>
               </div>
               <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
-                <h3 className="text-xl font-bold text-white mb-4">📦 Top Products</h3>
+                <h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'17px',color:'#fff',marginBottom:'16px',display:'flex',alignItems:'center',gap:'8px'}}><Package size={16} color="#a78bfa"/>Top Products</h3>
                 <div className="space-y-3">{topProducts.map((p,i)=>(<div key={p.id} className="flex justify-between items-center p-3 bg-gray-900 rounded"><div className="flex items-center gap-3"><span className="text-2xl">{i+1}</span><div><p className="text-white font-semibold">{p.name}</p><p className="text-sm text-gray-400">{p.category}</p></div></div><div className="text-right"><p className="text-purple-400 font-bold">{parseFloat(p.revenue||0).toFixed(2)}€</p><p className="text-xs text-gray-400">{p.conversions} sales</p></div></div>))}{topProducts.length===0&&<p className="text-gray-400 text-center py-8">No data yet</p>}</div>
               </div>
             </div>
@@ -679,7 +692,7 @@ export default function AlugMarketplace() {
           {activeView==='dashboard' && (
             isUserLoggedIn ? (
               <div className="space-y-6">
-                <h2 className="text-3xl font-bold text-white mb-6">Dashboard</h2>
+                <h2 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:800,fontSize:'26px',color:'#fff',marginBottom:'24px',display:'flex',alignItems:'center',gap:'12px'}}><span style={{width:'36px',height:'36px',borderRadius:'10px',background:'rgba(59,130,246,0.18)',display:'flex',alignItems:'center',justifyContent:'center'}}><BarChart3 size={20} color="#60a5fa"/></span>Dashboard</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500"><DollarSign className="text-purple-300 mb-2" size={32}/><p className="text-3xl font-bold text-white">{parseFloat(analytics?.total_earnings||0).toFixed(2)}€</p><p className="text-sm text-purple-300">Total Earnings</p></div>
                   <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-lg p-6 border border-blue-500"><MousePointerClick className="text-blue-300 mb-2" size={32}/><p className="text-3xl font-bold text-white">{analytics?.total_clicks||0}</p><p className="text-sm text-blue-300">Clicks</p></div>
@@ -689,13 +702,13 @@ export default function AlugMarketplace() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6"><DailyStatsChart/><ProductStatsChart/></div>
                 <div className="bg-gradient-to-br from-purple-900 to-purple-800 rounded-lg p-6 border border-purple-500">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div><h3 className="text-xl font-bold text-white">💰 Available Balance</h3><p className="text-4xl font-bold text-white mt-2">{parseFloat(balance?.available_balance||0).toFixed(2)}€</p><p className="text-sm text-purple-300 mt-1">Earned: {parseFloat(balance?.total_earned||0).toFixed(2)}€ | Paid: {parseFloat(balance?.total_paid||0).toFixed(2)}€</p></div>
+                    <div><h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'17px',color:'#fff'}}>Available Balance</h3><p className="text-4xl font-bold text-white mt-2">{parseFloat(balance?.available_balance||0).toFixed(2)}€</p><p className="text-sm text-purple-300 mt-1">Earned: {parseFloat(balance?.total_earned||0).toFixed(2)}€ | Paid: {parseFloat(balance?.total_paid||0).toFixed(2)}€</p></div>
                     <button onClick={()=>setShowPayoutModal(true)} disabled={!balance?.available_balance||balance.available_balance<10} className="bg-white text-purple-900 px-6 py-3 rounded-lg font-bold hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"><CreditCard size={20} className="inline mr-2"/>Request Payout</button>
                   </div>
                   {payouts.length>0&&(<div className="mt-4 border-t border-purple-700 pt-4"><h4 className="text-white font-semibold mb-2">Recent Payouts</h4><div className="space-y-2">{payouts.slice(0,3).map(p=>(<div key={p.id} className="flex justify-between items-center text-sm"><span className="text-gray-300">{new Date(p.requested_at).toLocaleDateString()}</span><span className="text-white font-semibold">{parseFloat(p.amount).toFixed(2)}€</span><span>{getStatusBadge(p.status)}</span></div>))}</div></div>)}
                 </div>
                 <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
-                  <h3 className="text-xl font-bold text-white mb-4">My Affiliate Links ({myLinks.length})</h3>
+                  <h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'17px',color:'#fff',marginBottom:'16px'}}>My Affiliate Links ({myLinks.length})</h3>
                   {myLinks.length===0?<p className="text-gray-400">No links yet. Go to Shop!</p>:(
                     <div className="space-y-3">{myLinks.map(link=>{const fullLink=`${window.location.origin}/aff/${link.link_code}`;return(<div key={link.id} className="bg-gray-900 rounded-lg p-4 border border-gray-700"><div className="flex justify-between mb-2"><p className="text-white font-semibold">{link.product_name}</p><button onClick={()=>copyToClipboard(fullLink,link.id)} className="text-purple-400">{copiedId===link.id?<Check size={16}/>:<Copy size={16}/>}</button></div><code className="text-xs text-gray-400 break-all block mb-2">{fullLink}</code><div className="flex gap-4 text-xs"><span className="text-gray-400">🖱 {link.clicks||0} Clicks</span><span className="text-gray-400">✅ {link.conversions||0} Sales</span><span className="text-purple-400 font-semibold">💰 {parseFloat(link.revenue||0).toFixed(2)}€</span></div></div>);})}</div>
                   )}
@@ -760,7 +773,7 @@ export default function AlugMarketplace() {
       {/* Footer & Legal — bei allen App-Views außer Landing (Landing hat eigenen) */}
       {activeView!=='landing' && (
         <>
-          <div style={{background:'#07060f'}}><Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/></div>
+          <div style={{background:'#0a0a14',paddingTop:'1px'}}><Footer onLegalClick={(page)=>{setLegalPage(page);setShowLegalModal(true);}}/></div>
           <CookieBanner/>
           {showLegalModal && <LegalModal page={legalPage} onClose={()=>setShowLegalModal(false)}/>}
         </>
