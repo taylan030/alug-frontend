@@ -82,7 +82,7 @@ const DailyStatsChart = () => {
   if (loading) return <LoadingSpinner />;
   return (
     <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
-      <h3 className="text-xl font-bold text-white mb-4">📈 Clicks & Conversions (Last 7 Days)</h3>
+      <h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'16px',color:'#fff',marginBottom:'16px',display:'flex',alignItems:'center',gap:'8px'}}><BarChart3 size={16} color="#60a5fa"/>Clicks & Conversions (Last 7 Days)</h3>
       {dailyData.length===0 ? <p className="text-gray-400 text-center py-8">No data yet</p> : (
         <ResponsiveContainer width="100%" height={250}>
           <LineChart data={dailyData}>
@@ -114,7 +114,7 @@ const ProductStatsChart = () => {
   if (loading) return <LoadingSpinner />;
   return (
     <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
-      <h3 className="text-xl font-bold text-white mb-4">💰 Top Products by Revenue</h3>
+      <h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'16px',color:'#fff',marginBottom:'16px',display:'flex',alignItems:'center',gap:'8px'}}><TrendingUp size={16} color="#a78bfa"/>Top Products by Revenue</h3>
       {productData.length===0 ? <p className="text-gray-400 text-center py-8">No data yet</p> : (
         <ResponsiveContainer width="100%" height={250}>
           <BarChart data={productData}>
@@ -230,7 +230,7 @@ export default function AlugMarketplace() {
     checkAuthStatus();
   }, []);
 
-  // Inject Plus Jakarta Sans font
+  // Inject Plus Jakarta Sans font + footer override
   useEffect(() => {
     if (!document.getElementById('alug-app-font')) {
       const link = document.createElement('link');
@@ -238,6 +238,15 @@ export default function AlugMarketplace() {
       link.rel = 'stylesheet';
       link.href = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&display=swap';
       document.head.appendChild(link);
+    }
+    if (!document.getElementById('alug-footer-override')) {
+      const style = document.createElement('style');
+      style.id = 'alug-footer-override';
+      style.textContent = `
+        .bg-gray-800.border-t { background: #0a0a14 !important; border-top-color: rgba(255,255,255,0.06) !important; }
+        footer.bg-gray-800, div.bg-gray-800:has(footer), .bg-gray-800:last-child { background: #0a0a14 !important; }
+      `;
+      document.head.appendChild(style);
     }
   }, []);
 
@@ -651,11 +660,11 @@ export default function AlugMarketplace() {
                 <div className="bg-gradient-to-br from-pink-900 to-pink-800 rounded-lg p-4 border border-pink-500"><p className="text-2xl font-bold text-white">{parseFloat(adminStats.total_revenue||0).toFixed(0)}€</p><p className="text-xs text-pink-300">Umsatz</p></div>
               </div>)}
               <div className="bg-gray-800 rounded-lg border border-green-500 p-6">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Store className="text-green-400"/>Partner ({adminPartners.length})</h3>
+                <h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'16px',color:'#fff',marginBottom:'16px',display:'flex',alignItems:'center',gap:'8px'}}><span style={{width:'24px',height:'24px',borderRadius:'6px',background:'rgba(16,185,129,0.18)',display:'flex',alignItems:'center',justifyContent:'center'}}><Store size={14} color="#34d399"/></span>Partner ({adminPartners.length})</h3>
                 <div className="space-y-3">{adminPartners.map(p=>(<div key={p.id} className="bg-gray-900 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"><div><p className="text-white font-semibold">{p.name}</p><p className="text-sm text-gray-400">{p.email}</p><p className="text-xs text-gray-500">{p.approved_products}/{p.total_products} Produkte</p></div><div className="flex items-center gap-3">{p.partner_approved?<span className="text-xs bg-green-800 text-green-300 px-3 py-1 rounded-full">✅ Genehmigt</span>:<span className="text-xs bg-yellow-800 text-yellow-300 px-3 py-1 rounded-full">⏳ Ausstehend</span>}{!p.partner_approved?<button onClick={()=>handleApprovePartner(p.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Genehmigen</button>:<button onClick={()=>handleRevokePartner(p.id)} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Sperren</button>}</div></div>))}{adminPartners.length===0&&<p className="text-gray-400 text-center py-4">Noch keine Partner</p>}</div>
               </div>
               <div className="bg-gray-800 rounded-lg border border-orange-500 p-6">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><Package className="text-orange-400"/>Produkte zur Genehmigung</h3>
+                <h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'16px',color:'#fff',marginBottom:'16px',display:'flex',alignItems:'center',gap:'8px'}}><span style={{width:'24px',height:'24px',borderRadius:'6px',background:'rgba(245,158,11,0.18)',display:'flex',alignItems:'center',justifyContent:'center'}}><Package size={14} color="#fbbf24"/></span>Produkte zur Genehmigung</h3>
                 <div className="space-y-3">{adminAllProducts.filter(p=>!p.approved&&p.vendor_id).map(product=>(<div key={product.id} className="bg-gray-900 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"><div><p className="text-white font-semibold">{product.name}</p><p className="text-sm text-gray-400">von {product.vendor_name||'Unbekannt'} · {product.price} · {product.commission_value}{product.commission_type==='percentage'?'%':'€'}</p><p className="text-xs text-gray-500">{product.category} · {product.attribution_days||30} Tage</p></div><div className="flex gap-2"><button onClick={()=>handleApproveProduct(product.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Genehmigen</button><button onClick={()=>handleRejectProduct(product.id)} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Ablehnen</button></div></div>))}{adminAllProducts.filter(p=>!p.approved&&p.vendor_id).length===0&&<p className="text-gray-400 text-center py-4">Keine ausstehenden Produkte</p>}</div>
               </div>
               <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
@@ -667,7 +676,7 @@ export default function AlugMarketplace() {
                 <div className="space-y-3">{adminPayouts.map(p=>(<div key={p.id} className="bg-gray-900 rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"><div><p className="text-white font-semibold">{p.user_name}</p><p className="text-sm text-gray-400">{p.payment_method} - {p.payment_details}</p></div><div className="text-right"><p className="text-2xl font-bold text-purple-400">{parseFloat(p.amount).toFixed(2)}€</p><p className="text-sm">{getStatusBadge(p.status)}</p></div>{p.status==='pending'&&<div className="flex gap-2"><button onClick={()=>handleUpdatePayoutStatus(p.id,'paid')} className="bg-green-600 text-white px-3 py-1 rounded text-sm">Paid</button><button onClick={()=>handleUpdatePayoutStatus(p.id,'rejected')} className="bg-red-600 text-white px-3 py-1 rounded text-sm">Reject</button></div>}</div>))}{adminPayouts.length===0&&<p className="text-gray-400 text-center py-8">No requests</p>}</div>
               </div>
               <div className="bg-gray-800 rounded-lg border border-purple-500 p-6">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2"><FileText className="text-purple-400"/>Rechtliche Angaben</h3>
+                <h3 style={{fontFamily:"'Plus Jakarta Sans',sans-serif",fontWeight:700,fontSize:'16px',color:'#fff',marginBottom:'16px',display:'flex',alignItems:'center',gap:'8px'}}><span style={{width:'24px',height:'24px',borderRadius:'6px',background:'rgba(139,92,246,0.18)',display:'flex',alignItems:'center',justifyContent:'center'}}><FileText size={14} color="#a78bfa"/></span>Rechtliche Angaben</h3>
                 <AdminLegalEditor/>
               </div>
             </div>
